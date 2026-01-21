@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'io.github.bzkf'
-version = '0.1.14' // x-release-please-version
+version = '0.1.15' // x-release-please-version
 base.archivesName = 'obds2-to-obds3-app'
 
 java {
