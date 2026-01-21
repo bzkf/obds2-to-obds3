@@ -43,7 +43,7 @@ sourceSets {
 }
 
 dependencies {
-    api platform('com.fasterxml.jackson:jackson-bom:2.20.1')
+    api platform('com.fasterxml.jackson:jackson-bom:2.21.0')
     api 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
     api 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
     api 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations'
