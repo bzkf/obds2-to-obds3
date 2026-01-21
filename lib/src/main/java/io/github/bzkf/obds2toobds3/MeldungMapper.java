@@ -615,8 +615,26 @@ class MeldungMapper {
     if (diagnose.getMengeHistologie() != null) {
 
       if (diagnose.getMengeHistologie().getHistologie().size() > 1) {
-        LOG.warn(
-            "Multiple entries for 'Diagnose.Histologie' found. Only the first entry can be mapped!");
+        var allSame =
+            diagnose.getMengeHistologie().getHistologie().stream()
+                    .map(
+                        h -> {
+                          try {
+                            return ObdsMapper.XML_MAPPER.writeValueAsString(h);
+                          } catch (JsonProcessingException e) {
+                            LOG.error("Failed to serialize Histologie for comparison", e);
+                            return "";
+                          }
+                        })
+                    .distinct()
+                    .count()
+                == 1;
+        if (!allSame) {
+          LOG.warn(
+              "Multiple entries for 'Diagnose.Histologie' found that differ in content. "
+                  + "Only the first entry can be mapped! Meldung: {}",
+              source.getMeldungID());
+        }
       }
 
       var firstHistologie = diagnose.getMengeHistologie().getHistologie().stream().findFirst();

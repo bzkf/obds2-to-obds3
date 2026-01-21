@@ -48,6 +48,11 @@
                 <Histologie_EinsendeNr>T/2024/1234</Histologie_EinsendeNr>
                 <Grading>U</Grading>
               </Histologie>
+              <Histologie>
+                <Tumor_Histologiedatum>04.12.2024</Tumor_Histologiedatum>
+                <Histologie_EinsendeNr>T/2024/1234</Histologie_EinsendeNr>
+                <Grading>T</Grading>
+              </Histologie>
             </Menge_Histologie>
             <Anmerkung>Test</Anmerkung>
           </Diagnose>
