@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.15](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.14...v0.1.15) (2026-01-21)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([#111](https://github.com/bzkf/obds2-to-obds3/issues/111)) ([1e8857c](https://github.com/bzkf/obds2-to-obds3/commit/1e8857cb9f9c34446f31a4adaa039357e55b9988))
+* **deps:** update dependency org.junit:junit-bom to v6 ([#113](https://github.com/bzkf/obds2-to-obds3/issues/113)) ([29c7106](https://github.com/bzkf/obds2-to-obds3/commit/29c7106636ee5c47aa8d839662f1fede6eecc774))
+* only log if multiple entries for 'Diagnose.Histologie' are found that differ in content ([#114](https://github.com/bzkf/obds2-to-obds3/issues/114)) ([bfe6879](https://github.com/bzkf/obds2-to-obds3/commit/bfe6879765a1505f3a8f4d7fc93bd2b6c897629e))
+
 ## [0.1.14](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.13...v0.1.14) (2025-12-05)
 
 
