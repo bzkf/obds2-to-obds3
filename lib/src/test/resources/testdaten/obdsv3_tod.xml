@@ -36,7 +36,7 @@
             <Diagnosedatum Datumsgenauigkeit="E">2024-06-10</Diagnosedatum>
             <Seitenlokalisation>T</Seitenlokalisation>
           </Tumorzuordnung>
-          <Tod>
+          <Tod Abschluss_ID="1-1">
             <Tod_tumorbedingt>U</Tod_tumorbedingt>
           </Tod>
         </Meldung>

@@ -58,7 +58,7 @@ class PatientMapper {
     // Meldungen
     var mappedMeldungen =
         source.getMengeMeldung().getMeldung().stream()
-            .map(meldungMapper::map)
+            .map(m -> meldungMapper.map(m, source))
             .flatMap(List::stream)
             .toList();
 
