@@ -26,6 +26,7 @@ package io.github.bzkf.obds2toobds3;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import de.basisdatensatz.obds.v2.ADTGEKID;
+import de.basisdatensatz.obds.v2.ADTGEKID.MengePatient.Patient;
 import de.basisdatensatz.obds.v3.*;
 import de.basisdatensatz.obds.v3.DiagnoseTyp.MengeFruehereTumorerkrankung.FruehereTumorerkrankung;
 import de.basisdatensatz.obds.v3.OBDS.MengePatient.Patient.MengeMeldung.Meldung;
@@ -63,7 +64,8 @@ class MeldungMapper {
    * @param source The source message
    * @return
    */
-  public List<Meldung> map(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+  public List<Meldung> map(
+      ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source, Patient patient) {
     if (null == source) {
       throw new IllegalArgumentException(MUST_NOT_BE_NULL);
     }
@@ -84,10 +86,9 @@ class MeldungMapper {
 
     if (null == source.getTumorzuordnung()
         && (null == source.getDiagnose()
-            || null == source.getDiagnose().getPrimaertumorICDCode()
-            || null == source.getDiagnose().getPrimaertumorICDVersion())) {
+            || null == source.getDiagnose().getPrimaertumorICDCode())) {
 
-      LOG.warn("Meldung has incomplete Diagnose data: ICD_Code, ICD_Version may be null.");
+      LOG.warn("Meldung has incomplete Diagnose data: ICD_Code isnull.");
 
       if (ignoreUnmappableMessages) {
         return new ArrayList<>();
@@ -143,7 +144,7 @@ class MeldungMapper {
     // Verlauf - Ohne: oOBDS v2 Verlauf - Tod
     result.addAll(getMappedVerlauf(source));
     // Verlauf - Hier: oBDS v2 Verlauf - Tod
-    getMeldungTod(source).ifPresent(result::add);
+    getMeldungTod(source, patient).ifPresent(result::add);
 
     // Für jede Meldung: Ergänze Tumorzuordnung aus Diagnose, wenn möglich und noch
     // nicht vorhanden
@@ -189,11 +190,8 @@ class MeldungMapper {
 
     var source = meldung.getDiagnose();
 
-    if (null == source
-        || null == source.getDiagnosedatum()
-        || null == source.getPrimaertumorICDCode()
-        || null == source.getPrimaertumorICDVersion()) {
-      LOG.warn("Tumorzuordnung Diagnosedatum, ICD_Code or ICD_Version are null");
+    if (null == source || null == source.getPrimaertumorICDCode()) {
+      LOG.error("Tumorzuordnung ICD_Code is null");
       return Optional.empty();
     }
 
@@ -216,7 +214,7 @@ class MeldungMapper {
     } else if (null != source.getTumorID()) {
       mappedTumorzuordnung.setTumorID(source.getTumorID());
     } else {
-      LOG.error("TumorID is null");
+      LOG.error("TumorID is null or can't be created from the given data.");
       throw new UnmappableItemException(TUMORID_MUST_NOT_BE_NULL);
     }
     // Datum
@@ -349,9 +347,20 @@ class MeldungMapper {
    * @return
    */
   private Optional<Meldung> getMeldungTod(
-      ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
+      ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source, Patient patient) {
     if (null == source) {
       throw new IllegalArgumentException(MUST_NOT_BE_NULL);
+    }
+
+    String abschlussId;
+    if (source.getTumorzuordnung() != null && source.getTumorzuordnung().getTumorID() != null) {
+      abschlussId =
+          patient.getPatientenStammdaten().getPatientID()
+              + "-"
+              + source.getTumorzuordnung().getTumorID();
+    } else {
+      abschlussId = patient.getPatientenStammdaten().getPatientID();
+      LOG.warn("Building AbschlussID for Tod without TumorID in Tumorzuordnung.");
     }
 
     var meldung = getMeldungsRumpf(source);
@@ -366,6 +375,7 @@ class MeldungMapper {
             "The verlauf for this Meldung with Meldeanlass=tod is unset. "
                 + "Assuming a death report with no further information.");
         var tod = new TodTyp();
+        tod.setAbschlussID(abschlussId);
         tod.setTodTumorbedingt(JNU.U);
         meldung.setTod(tod);
         return Optional.of(meldung);
@@ -381,8 +391,7 @@ class MeldungMapper {
             .map(
                 verlaufTod -> {
                   var tod = new TodTyp();
-                  // Nicht in oBDS v2?
-                  // tod.setAbschlussID();
+                  tod.setAbschlussID(abschlussId);
                   if (verlaufTod.getTodTumorbedingt() != null) {
                     tod.setTodTumorbedingt(JNU.fromValue(verlaufTod.getTodTumorbedingt().value()));
                   }
