@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.16](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.15...v0.1.16) (2026-01-23)
+
+
+### Bug Fixes
+
+* construct abschluss_id from patient and tumor id ([#116](https://github.com/bzkf/obds2-to-obds3/issues/116)) ([5a3290c](https://github.com/bzkf/obds2-to-obds3/commit/5a3290c9bfad2e014f7790df545f38ff175e3d61))
+
 ## [0.1.15](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.14...v0.1.15) (2026-01-21)
 
 
