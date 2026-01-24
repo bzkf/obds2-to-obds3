@@ -113,6 +113,7 @@ public class StrahlentherapieMapper {
       if (nebenwirkungV2.getNebenwirkungVersion() != null) {
         nebenwirkungV3.setVersion(nebenwirkungV2.getNebenwirkungVersion());
       } else {
+        LOG.warn("Nebenwirkung_Version is unset. Defaulting to 'Sonstige'.");
         nebenwirkungV3.setVersion("Sonstige");
       }
 
