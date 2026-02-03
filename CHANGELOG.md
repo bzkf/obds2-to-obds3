@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.17](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.16...v0.1.17) (2026-02-03)
+
+
+### Bug Fixes
+
+* npe in ST mapper and minor refactoring ([#119](https://github.com/bzkf/obds2-to-obds3/issues/119)) ([7599cb9](https://github.com/bzkf/obds2-to-obds3/commit/7599cb9c0dbaf64f328592307e20dcb3fb6d327f))
+
 ## [0.1.16](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.15...v0.1.16) (2026-01-23)
 
 
