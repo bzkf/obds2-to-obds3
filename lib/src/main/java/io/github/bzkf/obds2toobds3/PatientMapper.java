@@ -27,6 +27,7 @@ package io.github.bzkf.obds2toobds3;
 import de.basisdatensatz.obds.v2.ADTGEKID;
 import de.basisdatensatz.obds.v3.*;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
@@ -84,18 +85,18 @@ class PatientMapper {
     }
     // Adresse gültig bis
     else if (adresse.getGueltigVon() == null && adresse.getGueltigBis() != null) {
-      return end.isPresent() && end.get().isAfter(LocalDate.now());
+      return end.isPresent() && end.get().isAfter(LocalDate.now(ZoneId.of("Europe/Berlin")));
     }
     // Adresse gültig ab
     else if (adresse.getGueltigVon() != null && adresse.getGueltigBis() == null) {
-      return start.isPresent() && start.get().isBefore(LocalDate.now());
+      return start.isPresent() && start.get().isBefore(LocalDate.now(ZoneId.of("Europe/Berlin")));
     }
     // Adresse gültig von bis
     else if (adresse.getGueltigVon() != null && adresse.getGueltigBis() != null) {
       return start.isPresent()
-          && start.get().isBefore(LocalDate.now())
+          && start.get().isBefore(LocalDate.now(ZoneId.of("Europe/Berlin")))
           && end.isPresent()
-          && end.get().isAfter(LocalDate.now());
+          && end.get().isAfter(LocalDate.now(ZoneId.of("Europe/Berlin")));
     }
 
     return false;

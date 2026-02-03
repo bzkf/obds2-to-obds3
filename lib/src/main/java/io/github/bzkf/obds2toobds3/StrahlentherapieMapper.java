@@ -13,6 +13,7 @@ import de.basisdatensatz.obds.v3.StrahlendosisTyp;
 import de.basisdatensatz.obds.v3.ZielgebietTyp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -47,21 +48,29 @@ public class StrahlentherapieMapper {
 
       var mengeBestrahlung = new MengeBestrahlung();
 
-      for (var bestrahlungV2 : source.getMengeBestrahlung().getBestrahlung()) {
-        var bestrahlungV3 = new STTyp.MengeBestrahlung.Bestrahlung();
+      if (source.getMengeBestrahlung() != null
+          && source.getMengeBestrahlung().getBestrahlung() != null) {
 
-        var mappedApplikationsart = mapApplikationsart(bestrahlungV2);
-        bestrahlungV3.setApplikationsart(mappedApplikationsart);
+        for (var bestrahlungV2 : source.getMengeBestrahlung().getBestrahlung()) {
+          var bestrahlungV3 = new STTyp.MengeBestrahlung.Bestrahlung();
 
-        MapperUtils.mapDateString(bestrahlungV2.getSTBeginnDatum())
-            .ifPresent(d -> bestrahlungV3.setBeginn(d.getValue()));
-        MapperUtils.mapDateString(bestrahlungV2.getSTEndeDatum())
-            .ifPresent(d -> bestrahlungV3.setEnde(d.getValue()));
+          var mappedApplikationsart = mapApplikationsart(bestrahlungV2);
+          if (mappedApplikationsart.isPresent()) {
+            bestrahlungV3.setApplikationsart(mappedApplikationsart.get());
+          } else {
+            LOG.warn("Applikationsart not mappable. Creates invalid oBDS v3.");
+          }
 
-        mengeBestrahlung.getBestrahlung().add(bestrahlungV3);
+          MapperUtils.mapDateString(bestrahlungV2.getSTBeginnDatum())
+              .ifPresent(d -> bestrahlungV3.setBeginn(d.getValue()));
+          MapperUtils.mapDateString(bestrahlungV2.getSTEndeDatum())
+              .ifPresent(d -> bestrahlungV3.setEnde(d.getValue()));
+
+          mengeBestrahlung.getBestrahlung().add(bestrahlungV3);
+        }
+
+        stTyp.setMengeBestrahlung(mengeBestrahlung);
       }
-
-      stTyp.setMengeBestrahlung(mengeBestrahlung);
 
       if (source.getMengeNebenwirkung() != null) {
         var mappedNebenwirkungen = mapNebenwirkungen(source.getMengeNebenwirkung());
@@ -126,7 +135,7 @@ public class StrahlentherapieMapper {
     return result;
   }
 
-  private static Applikationsart mapApplikationsart(Bestrahlung bestrahlung) {
+  private static Optional<Applikationsart> mapApplikationsart(Bestrahlung bestrahlung) {
     var result = new Applikationsart();
 
     SeiteZielgebietTyp seiteZielgebiet = null;
@@ -191,7 +200,7 @@ public class StrahlentherapieMapper {
       }
 
       result.setPerkutan(perkutan);
-      return result;
+      return Optional.of(result);
     }
 
     if (applikationsart.startsWith("K")) {
@@ -236,7 +245,7 @@ public class StrahlentherapieMapper {
       }
 
       result.setKontakt(kontakt);
-      return result;
+      return Optional.of(result);
     }
 
     if (applikationsart.startsWith("I")) {
@@ -279,7 +288,7 @@ public class StrahlentherapieMapper {
       }
 
       result.setKontakt(kontakt);
-      return result;
+      return Optional.of(result);
     }
 
     if (applikationsart.startsWith("M")) {
@@ -309,7 +318,7 @@ public class StrahlentherapieMapper {
       }
 
       result.setMetabolisch(metabolisch);
-      return result;
+      return Optional.of(result);
     }
 
     if (applikationsart.equals("S")) {
@@ -327,11 +336,11 @@ public class StrahlentherapieMapper {
       sonstige.setEinzeldosis(einzeldosis);
       sonstige.setGesamtdosis(gesamtdosis);
       result.setSonstige(sonstige);
-      return result;
+      return Optional.of(result);
     }
 
     LOG.warn("Unexpected radiation type {}", applikationsart);
 
-    return null;
+    return Optional.empty();
   }
 }

@@ -43,8 +43,6 @@ class MeldungMapper {
   private static final String MUST_NOT_BE_NULL = "ADT_GEKID must not be null at this point";
   private static final String DIAGNOSE_SHOULD_NOT_BE_NULL =
       "ADT_GEKID diagnose should not be null at this point";
-  private static final String DIAGNOSESICHERUNG_MUST_NOT_BE_NULL =
-      "ADT_GEKID diagnosesicherung must not be null at this point";
   private static final String TUMORZUORDUNG_SHOULD_NOT_BE_NULL =
       "ADT_GEKID tumorzuordung should not be null at this point - required for oBDS v3";
   private static final String TUMORID_MUST_NOT_BE_NULL =
