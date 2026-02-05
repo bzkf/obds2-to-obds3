@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.18](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.17...v0.1.18) (2026-02-05)
+
+
+### Features
+
+* log if borderline grading and non-borderline are present ([#124](https://github.com/bzkf/obds2-to-obds3/issues/124)) ([0a57685](https://github.com/bzkf/obds2-to-obds3/commit/0a576854e79b568c21fa03da39ec501c4aacd8a4))
+
+
+### Bug Fixes
+
+* more explicit handling for multiple Diagnose.Histologie to single Histologie ([#122](https://github.com/bzkf/obds2-to-obds3/issues/122)) ([40cf043](https://github.com/bzkf/obds2-to-obds3/commit/40cf043155006fb565d56a73f48922483275bbb7))
+
 ## [0.1.17](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.16...v0.1.17) (2026-02-03)
 
 
