@@ -532,7 +532,10 @@ class MeldungMapper {
               mappedVerlauf.setVerlaufTumorstatusLymphknoten(
                   verlauf.getVerlaufTumorstatusLymphknoten());
 
-              mapHistologie(verlauf.getHistologie()).ifPresent(mappedVerlauf::setHistologie);
+              if (verlauf.getHistologie() != null) {
+                HistologieMapper.map(List.of(verlauf.getHistologie()))
+                    .ifPresent(mappedVerlauf::setHistologie);
+              }
 
               // Nur verwendet, wenn Datumstring mappbar
               MapperUtils.mapDateString(verlauf.getUntersuchungsdatumVerlauf())
@@ -615,39 +618,9 @@ class MeldungMapper {
       mappedDiagnose.setMengeFruehereTumorerkrankung(mengeFruehereTumorerkrankung);
     }
 
-    // Menge Histologie lässt sich nicht direkt auf einen Wert mappen in oBDS v3 -
-    // mehrere Diagnose-Meldungen?
-    // mappedDiagnose.setHistologie(..);
-    // Aktuell: Immer nur erste Histologie verwendet!
     if (diagnose.getMengeHistologie() != null) {
-
-      if (diagnose.getMengeHistologie().getHistologie().size() > 1) {
-        var allSame =
-            diagnose.getMengeHistologie().getHistologie().stream()
-                    .map(
-                        h -> {
-                          try {
-                            return ObdsMapper.XML_MAPPER.writeValueAsString(h);
-                          } catch (JsonProcessingException e) {
-                            LOG.error("Failed to serialize Histologie for comparison", e);
-                            return "";
-                          }
-                        })
-                    .distinct()
-                    .count()
-                == 1;
-        if (!allSame) {
-          LOG.warn(
-              "Multiple entries for 'Diagnose.Histologie' found that differ in content. "
-                  + "Only the first entry can be mapped! Meldung: {}",
-              source.getMeldungID());
-        }
-      }
-
-      var firstHistologie = diagnose.getMengeHistologie().getHistologie().stream().findFirst();
-      if (firstHistologie.isPresent()) {
-        MeldungMapper.mapHistologie(firstHistologie.get()).ifPresent(mappedDiagnose::setHistologie);
-      }
+      HistologieMapper.map(diagnose.getMengeHistologie().getHistologie())
+          .ifPresent(mappedDiagnose::setHistologie);
     }
 
     // Fernmetastasen
@@ -709,40 +682,9 @@ class MeldungMapper {
     mappedPathologie.setBefundtext(diagnose.getAnmerkung());
     mappedPathologie.setDiagnosesicherung(diagnose.getDiagnosesicherung());
 
-    // Menge Histologie lässt sich nicht direkt auf einen Wert mappen in oBDS v3 -
-    // mehrere Diagnose-Meldungen?
-    // mappedDiagnose.setHistologie(..);
-    // Aktuell: Immer nur erste Histologie verwendet!
     if (diagnose.getMengeHistologie() != null) {
-      if (diagnose.getMengeHistologie().getHistologie().size() > 1) {
-        var allSame =
-            diagnose.getMengeHistologie().getHistologie().stream()
-                    .map(
-                        h -> {
-                          try {
-                            return ObdsMapper.XML_MAPPER.writeValueAsString(h);
-                          } catch (JsonProcessingException e) {
-                            LOG.error("Failed to serialize Histologie for comparison", e);
-                            return "";
-                          }
-                        })
-                    .distinct()
-                    .count()
-                == 1;
-        if (!allSame) {
-          LOG.warn(
-              "Multiple entries for 'Diagnose.Histologie' found that differ in content. "
-                  + "Only the first entry can be mapped. Meldung: {}",
-              source.getMeldungID());
-        }
-      }
-
-      var firstHistologie = diagnose.getMengeHistologie().getHistologie().stream().findFirst();
-      // Wenn Histo vorhanden - erste Histo
-      if (firstHistologie.isPresent()) {
-        MeldungMapper.mapHistologie(firstHistologie.get())
-            .ifPresent(mappedPathologie::setHistologie);
-      }
+      HistologieMapper.map(diagnose.getMengeHistologie().getHistologie())
+          .ifPresent(mappedPathologie::setHistologie);
     }
 
     // Fernmetastasen
@@ -982,34 +924,5 @@ class MeldungMapper {
     // Nicht in oBDSv2?
     // result.setUICCStadium();
     return Optional.of(result);
-  }
-
-  public static Optional<HistologieTyp> mapHistologie(
-      de.basisdatensatz.obds.v2.HistologieTyp source) {
-    if (source == null) {
-      return Optional.empty();
-    }
-
-    var mappedHisto = new HistologieTyp();
-    mappedHisto.setGrading(source.getGrading());
-    mappedHisto.setHistologieID(source.getHistologieID());
-    mappedHisto.setHistologieEinsendeNr(source.getHistologieEinsendeNr());
-    mappedHisto.setLKBefallen(source.getLKBefallen());
-    mappedHisto.setLKUntersucht(source.getLKUntersucht());
-    mappedHisto.setMorphologieFreitext(source.getMorphologieFreitext());
-    mappedHisto.setSentinelLKBefallen(source.getSentinelLKBefallen());
-    mappedHisto.setSentinelLKUntersucht(source.getSentinelLKUntersucht());
-
-    if (source.getMorphologieCode() != null) {
-      var morphologieCode = new MorphologieICDOTyp();
-      morphologieCode.setCode(source.getMorphologieCode());
-      morphologieCode.setVersion(source.getMorphologieICDOVersion());
-      mappedHisto.getMorphologieICDO().add(morphologieCode);
-    }
-
-    // Nur wenn vorhanden und mappbar
-    MapperUtils.mapDateString(source.getTumorHistologiedatum())
-        .ifPresent(mappedHisto::setTumorHistologiedatum);
-    return Optional.of(mappedHisto);
   }
 }
