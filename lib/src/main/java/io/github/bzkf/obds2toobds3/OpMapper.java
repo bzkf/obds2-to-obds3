@@ -43,7 +43,7 @@ public class OpMapper {
       opTyp.setMengeOPS(mengeOPS);
     }
 
-    MeldungMapper.mapHistologie(source.getHistologie()).ifPresent(opTyp::setHistologie);
+    HistologieMapper.map(List.of(source.getHistologie())).ifPresent(opTyp::setHistologie);
     MeldungMapper.mapTnmType(source.getTNM()).ifPresent(opTyp::setTNM);
 
     if (source.getMengeKomplikation() != null) {

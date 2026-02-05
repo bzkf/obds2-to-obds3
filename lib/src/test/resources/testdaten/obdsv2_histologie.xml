@@ -44,13 +44,13 @@
             <Seitenlokalisation>T</Seitenlokalisation>
             <Menge_Histologie>
               <Histologie>
-                <Tumor_Histologiedatum>04.12.2024</Tumor_Histologiedatum>
-                <Histologie_EinsendeNr>T/2024/1234</Histologie_EinsendeNr>
-                <Grading>U</Grading>
+                <Tumor_Histologiedatum>01.12.2024</Tumor_Histologiedatum>
+                <Histologie_EinsendeNr>T/2024/1</Histologie_EinsendeNr>
+                <Grading>4</Grading>
               </Histologie>
               <Histologie>
-                <Tumor_Histologiedatum>04.12.2024</Tumor_Histologiedatum>
-                <Histologie_EinsendeNr>T/2024/1234</Histologie_EinsendeNr>
+                <Tumor_Histologiedatum>02.12.2024</Tumor_Histologiedatum>
+                <Histologie_EinsendeNr>T/2024/2</Histologie_EinsendeNr>
                 <Grading>T</Grading>
               </Histologie>
             </Menge_Histologie>
