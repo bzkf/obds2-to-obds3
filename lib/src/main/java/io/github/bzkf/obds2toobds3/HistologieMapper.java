@@ -93,6 +93,29 @@ public class HistologieMapper {
 
     worstGrading.ifPresent(mappedHisto::setGrading);
 
+    var hasB =
+        source.stream()
+            .map(de.basisdatensatz.obds.v2.HistologieTyp::getGrading)
+            .anyMatch("B"::equals);
+
+    var hasAnyNonB =
+        source.stream()
+            .map(de.basisdatensatz.obds.v2.HistologieTyp::getGrading)
+            .filter(Objects::nonNull)
+            .anyMatch(g -> !"B".equals(g));
+
+    if (hasB && hasAnyNonB) {
+      var gradings =
+          source.stream()
+              .map(de.basisdatensatz.obds.v2.HistologieTyp::getGrading)
+              .filter(Objects::nonNull)
+              .distinct()
+              .sorted()
+              .toList();
+
+      LOG.warn("Histologie-Grading inconsistent: 'B' combined with {}", gradings);
+    }
+
     return Optional.of(mappedHisto);
   }
 
