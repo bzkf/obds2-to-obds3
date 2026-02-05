@@ -51,7 +51,7 @@
               <Histologie>
                 <Tumor_Histologiedatum>02.12.2024</Tumor_Histologiedatum>
                 <Histologie_EinsendeNr>T/2024/2</Histologie_EinsendeNr>
-                <Grading>T</Grading>
+                <Grading>B</Grading>
               </Histologie>
             </Menge_Histologie>
             <Anmerkung>Test</Anmerkung>
