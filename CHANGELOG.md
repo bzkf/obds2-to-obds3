@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.21](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.20...v0.1.21) (2026-02-06)
+
+
+### Bug Fixes
+
+* combine einsendenrs ([#129](https://github.com/bzkf/obds2-to-obds3/issues/129)) ([9b680be](https://github.com/bzkf/obds2-to-obds3/commit/9b680bef506a7d66793635e8b75d46df0355ea61))
+
 ## [0.1.20](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.19...v0.1.20) (2026-02-06)
 
 
