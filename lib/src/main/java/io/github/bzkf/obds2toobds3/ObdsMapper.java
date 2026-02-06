@@ -45,7 +45,7 @@ public class ObdsMapper {
           .addModule(new JakartaXmlBindAnnotationModule())
           .addModule(new Jdk8Module())
           .enable(SerializationFeature.INDENT_OUTPUT)
-          .defaultPropertyInclusion(JsonInclude.Value.ALL_NON_EMPTY)
+          .serializationInclusion(JsonInclude.Include.NON_EMPTY)
           .build();
 
   private final PatientMapper patientMapper;
