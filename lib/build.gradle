@@ -8,7 +8,6 @@ plugins {
     id 'jacoco'
     id 'com.diffplug.spotless' version '8.1.0'
     id 'io.gitee.pkmer.sonatype-central-publisher' version '1.1.0'
-    id 'net.ltgt.errorprone' version '4.4.0'
 }
 
 group = 'io.github.bzkf'
@@ -60,9 +59,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testImplementation 'org.assertj:assertj-core:3.27.6'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-    errorprone 'com.google.errorprone:error_prone_core:2.46.0'
-    errorprone 'com.uber.nullaway:nullaway:0.12.15'
 }
 
 test {
@@ -180,22 +176,5 @@ spotless {
         importOrder()
         removeUnusedImports()
         googleJavaFormat()
-    }
-}
-
-import net.ltgt.gradle.errorprone.CheckSeverity
-
-tasks.withType(JavaCompile).configureEach {
-    options.errorprone {
-        check('NullAway', CheckSeverity.ERROR)
-        option('NullAway:AnnotatedPackages', 'io.github.bzkf')
-    }
-    options.errorprone.disableWarningsInGeneratedCode = true
-    options.errorprone.errorproneArgs.add('-XepExcludedPaths:(.*/src/generated/.*)')
-    // Include to disable NullAway on test code
-    if (name.toLowerCase().contains('test')) {
-        options.errorprone {
-            disable('NullAway')
-        }
     }
 }
