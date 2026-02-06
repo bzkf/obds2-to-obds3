@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.19](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.18...v0.1.19) (2026-02-06)
+
+
+### Bug Fixes
+
+* revert some changes ([#125](https://github.com/bzkf/obds2-to-obds3/issues/125)) ([bb8a7cc](https://github.com/bzkf/obds2-to-obds3/commit/bb8a7ccbb1e003aea8a711136df2b5df93d7d5f2))
+
 ## [0.1.18](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.17...v0.1.18) (2026-02-05)
 
 
