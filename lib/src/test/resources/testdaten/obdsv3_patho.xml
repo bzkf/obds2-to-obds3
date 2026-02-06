@@ -39,6 +39,7 @@
             <Diagnosesicherung>7</Diagnosesicherung>
             <Histologie>
               <Tumor_Histologiedatum Datumsgenauigkeit="E">2025-07-28</Tumor_Histologiedatum>
+              <Histologie_EinsendeNr>H/2025/000323</Histologie_EinsendeNr>
               <Grading>U</Grading>
             </Histologie>
             <Einsender>
