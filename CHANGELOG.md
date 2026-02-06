@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.20](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.19...v0.1.20) (2026-02-06)
+
+
+### Bug Fixes
+
+* npe in OpMapper ([#127](https://github.com/bzkf/obds2-to-obds3/issues/127)) ([c960e8d](https://github.com/bzkf/obds2-to-obds3/commit/c960e8d4691e132a19bbfd86b327a39f27af4085))
+
 ## [0.1.19](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.18...v0.1.19) (2026-02-06)
 
 

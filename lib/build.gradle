@@ -11,7 +11,7 @@ plugins {
 }
 
 group = 'io.github.bzkf'
-version = '0.1.19' // x-release-please-version
+version = '0.1.20' // x-release-please-version
 base.archivesName = 'obds2-to-obds3'
 
 configurations {
