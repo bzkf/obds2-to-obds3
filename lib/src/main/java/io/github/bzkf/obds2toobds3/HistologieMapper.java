@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,15 +38,6 @@ public class HistologieMapper {
     for (var v2Histo : sorted) {
       if (v2Histo.getHistologieID() != null && mappedHisto.getHistologieID() == null) {
         mappedHisto.setHistologieID(v2Histo.getHistologieID());
-
-        if (v2Histo.getHistologieEinsendeNr() != null) {
-          mappedHisto.setHistologieEinsendeNr(v2Histo.getHistologieEinsendeNr());
-          LOG.warn(
-              "The Histologie_ID={} is set for the current element, but the EinsendeNr isn't. "
-                  + "No EinsendeNr is mapped to avoid inconsistencies between the ID and the Nr",
-              v2Histo.getHistologieID());
-        }
-
         MapperUtils.mapDateString(v2Histo.getTumorHistologiedatum())
             .ifPresent(mappedHisto::setTumorHistologiedatum);
       }
@@ -84,6 +76,17 @@ public class HistologieMapper {
             .ifPresent(mappedHisto::setTumorHistologiedatum);
       }
     }
+
+    // construct the EinsendeNr by comma-seperating all individual numbers
+    var einsendeNrs =
+        source.stream()
+            .map(de.basisdatensatz.obds.v2.HistologieTyp::getHistologieEinsendeNr)
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(
+                Collectors.collectingAndThen(Collectors.joining(","), s -> s.isEmpty() ? null : s));
+
+    mappedHisto.setHistologieEinsendeNr(einsendeNrs);
 
     var worstGrading =
         source.stream()

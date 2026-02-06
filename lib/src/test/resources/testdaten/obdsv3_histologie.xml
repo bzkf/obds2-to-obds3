@@ -44,6 +44,7 @@
             <Diagnosesicherung>1</Diagnosesicherung>
             <Histologie>
               <Tumor_Histologiedatum Datumsgenauigkeit="E">2024-12-01</Tumor_Histologiedatum>
+              <Histologie_EinsendeNr>T/2024/1,T/2024/2</Histologie_EinsendeNr>
               <Grading>4</Grading>
             </Histologie>
             <Allgemeiner_Leistungszustand>U</Allgemeiner_Leistungszustand>
