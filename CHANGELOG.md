@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.22](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.21...v0.1.22) (2026-04-03)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([#132](https://github.com/bzkf/obds2-to-obds3/issues/132)) ([2b143e2](https://github.com/bzkf/obds2-to-obds3/commit/2b143e2569d5eae7e8e6e31755479e0dd5c09af1))
+* **deps:** update all non-major dependencies ([#137](https://github.com/bzkf/obds2-to-obds3/issues/137)) ([d0849ae](https://github.com/bzkf/obds2-to-obds3/commit/d0849aec7ef14726e8570cf3cf064232945729cc))
+
 ## [0.1.21](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.20...v0.1.21) (2026-02-06)
 
 
