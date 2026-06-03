@@ -24,7 +24,6 @@
 
 package io.github.bzkf.obds2toobds3;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import de.basisdatensatz.obds.v2.ADTGEKID;
 import de.basisdatensatz.obds.v2.ADTGEKID.MengePatient.Patient;
 import de.basisdatensatz.obds.v3.*;
@@ -35,6 +34,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import tools.jackson.core.JacksonException;
 
 class MeldungMapper {
 
@@ -75,7 +75,7 @@ class MeldungMapper {
         // Meldung_ID can be 50 chars max
         var digest = DigestUtils.sha256Hex(meldungXml).substring(0, 49);
         source.setMeldungID(digest);
-      } catch (JsonProcessingException e) {
+      } catch (JacksonException e) {
         throw new IllegalArgumentException(e);
       }
     }

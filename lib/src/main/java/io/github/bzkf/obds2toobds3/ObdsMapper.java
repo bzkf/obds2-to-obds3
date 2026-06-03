@@ -25,16 +25,16 @@
 package io.github.bzkf.obds2toobds3;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule;
 import de.basisdatensatz.obds.v2.ADTGEKID;
 import de.basisdatensatz.obds.v3.OBDS;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.Optional;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.MapperFeature;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.dataformat.xml.XmlMapper;
+import tools.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule;
 
 public class ObdsMapper {
 
@@ -43,9 +43,10 @@ public class ObdsMapper {
           .defaultUseWrapper(false)
           .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd"))
           .addModule(new JakartaXmlBindAnnotationModule())
-          .addModule(new Jdk8Module())
+          .disable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
           .enable(SerializationFeature.INDENT_OUTPUT)
-          .serializationInclusion(JsonInclude.Include.NON_EMPTY)
+          .changeDefaultPropertyInclusion(
+              incl -> incl.withValueInclusion(JsonInclude.Include.NON_EMPTY))
           .build();
 
   private final PatientMapper patientMapper;
@@ -137,7 +138,7 @@ public class ObdsMapper {
     return obds;
   }
 
-  public <T> T readValue(String str, Class<T> clazz) throws JsonProcessingException {
+  public <T> T readValue(String str, Class<T> clazz) throws JacksonException {
     if (!this.disableSchemaValidation && ADTGEKID.class == clazz) {
       SchemaValidator.isValid(str, SchemaValidator.SchemaVersion.ADT_GEKID_2_2_3);
     } else if (!this.disableSchemaValidation && OBDS.class == clazz) {
@@ -150,11 +151,11 @@ public class ObdsMapper {
     throw new IllegalArgumentException("Allowed classes are ADTGEKID and OBDS");
   }
 
-  public String writeMappedXmlString(ADTGEKID obj) throws JsonProcessingException {
+  public String writeMappedXmlString(ADTGEKID obj) throws JacksonException {
     return writeXmlString(map(obj));
   }
 
-  public String writeXmlString(OBDS obj) throws JsonProcessingException {
+  public String writeXmlString(OBDS obj) throws JacksonException {
     var xmlString = XML_MAPPER.writeValueAsString(obj);
     var result =
         String.format(
