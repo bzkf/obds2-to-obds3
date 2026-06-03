@@ -19,7 +19,7 @@ repositories {
 dependencies {
     implementation project(':lib')
     implementation 'commons-cli:commons-cli:1.11.0'
-    implementation 'commons-io:commons-io:2.21.0'
+    implementation 'commons-io:commons-io:2.22.0'
 }
 
 test {
