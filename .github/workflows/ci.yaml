@@ -26,7 +26,7 @@ jobs:
       hashes: ${{ steps.hash.outputs.hashes }}
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
+        uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
         with:
           egress-policy: audit # change to 'egress-policy: block' after couple of runs
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -56,7 +56,7 @@ jobs:
       - name: Run Test Coverage
         run: ./gradlew jacocoTestReport
 
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: package
           path: |
@@ -82,7 +82,7 @@ jobs:
 
       - name: upload assets to release
         if: ${{ github.event_name == 'release' && github.event.action == 'created' }}
-        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           files: |
             app/build/libs/*.jar
@@ -105,7 +105,7 @@ jobs:
       upload-assets: true
 
   lint:
-    uses: miracum/.github/.github/workflows/standard-lint.yaml@1478f7e298f11e96e4585dee4afdce8fabc2e162 # v1.20.5
+    uses: miracum/.github/.github/workflows/standard-lint.yaml@852cc3bbf5782e17d4d8e9da3392cb134a0fc4ff # v1.21.2
     permissions:
       contents: read
       pull-requests: write
