@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.22](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.21...v0.1.22) (2026-06-03)
+
+
+### Bug Fixes
+
+* **deps:** migrate to Jackson 3.x ([#138](https://github.com/bzkf/obds2-to-obds3/issues/138)) ([a7c56a1](https://github.com/bzkf/obds2-to-obds3/commit/a7c56a1033c4efb86d00ba4cc94df5d306b8f3c6))
+* **deps:** update all non-major dependencies ([#132](https://github.com/bzkf/obds2-to-obds3/issues/132)) ([2b143e2](https://github.com/bzkf/obds2-to-obds3/commit/2b143e2569d5eae7e8e6e31755479e0dd5c09af1))
+* **deps:** update all non-major dependencies ([#137](https://github.com/bzkf/obds2-to-obds3/issues/137)) ([d0849ae](https://github.com/bzkf/obds2-to-obds3/commit/d0849aec7ef14726e8570cf3cf064232945729cc))
+* **deps:** update all non-major dependencies ([#140](https://github.com/bzkf/obds2-to-obds3/issues/140)) ([bbe1899](https://github.com/bzkf/obds2-to-obds3/commit/bbe18996bccee006b16df233004f4c6eff4fc0ac))
+
 ## [0.1.21](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.20...v0.1.21) (2026-02-06)
 
 
