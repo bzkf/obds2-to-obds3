@@ -26,23 +26,23 @@ jobs:
       hashes: ${{ steps.hash.outputs.hashes }}
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
+        uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # v2.21.0
         with:
           egress-policy: audit # change to 'egress-policy: block' after couple of runs
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
 
       - name: Set up JDK
-        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           java-version: "25"
           distribution: "temurin"
 
-      - uses: gradle/actions/wrapper-validation@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
+      - uses: gradle/actions/wrapper-validation@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
+        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
         with:
           cache-disabled: true
 
@@ -82,7 +82,7 @@ jobs:
 
       - name: upload assets to release
         if: ${{ github.event_name == 'release' && github.event.action == 'created' }}
-        uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0 # zizmor: ignore[superfluous-actions] upload release assets directly
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2 # zizmor: ignore[superfluous-actions] upload release assets directly
         with:
           files: |
             app/build/libs/*.jar
@@ -105,7 +105,7 @@ jobs:
       upload-assets: true
 
   lint:
-    uses: miracum/.github/.github/workflows/standard-lint.yaml@852cc3bbf5782e17d4d8e9da3392cb134a0fc4ff # v1.21.2
+    uses: miracum/.github/.github/workflows/standard-lint.yaml@319a4f1e2fce970ad6ec2851286ee2bf7f8476e4 # v1.24.4
     permissions:
       contents: read
       pull-requests: write
