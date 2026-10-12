@@ -29,7 +29,30 @@ import de.basisdatensatz.obds.v3.AbsenderTyp;
 
 class AbsenderMapper {
 
+  static final String SOFTWARE_ID = "obds2-to-obds3";
+
+  /**
+   * Wird verwendet, wenn kein {@code Implementation-Version} Eintrag im Manifest vorhanden ist,
+   * z.B. beim Ausführen der Tests oder aus der IDE heraus.
+   */
+  static final String UNKNOWN_SOFTWARE_VERSION = "unknown";
+
+  private static final String SOFTWARE_VERSION =
+      resolveSoftwareVersion(AbsenderMapper.class.getPackage().getImplementationVersion());
+
   private AbsenderMapper() {}
+
+  /**
+   * @param implementationVersion Wert des {@code Implementation-Version} Eintrags aus dem Manifest
+   *     des Jars, falls vorhanden
+   * @return die Version oder {@link #UNKNOWN_SOFTWARE_VERSION}, wenn keine Version bekannt ist
+   */
+  static String resolveSoftwareVersion(String implementationVersion) {
+    if (null == implementationVersion || implementationVersion.isBlank()) {
+      return UNKNOWN_SOFTWARE_VERSION;
+    }
+    return implementationVersion.trim();
+  }
 
   public static AbsenderTyp map(ADTGEKID.Absender source) {
     if (null == source) {
@@ -44,9 +67,8 @@ class AbsenderMapper {
     absender.setEMail(source.getAbsenderEMail());
     absender.setTelefon(source.getAbsenderTelefon());
 
-    // Fixed Values
-    absender.setSoftwareID("obds2-to-obds3");
-    absender.setSoftwareVersion("0.1.0");
+    absender.setSoftwareID(SOFTWARE_ID);
+    absender.setSoftwareVersion(SOFTWARE_VERSION);
 
     return absender;
   }

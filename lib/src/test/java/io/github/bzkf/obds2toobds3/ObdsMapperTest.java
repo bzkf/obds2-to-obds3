@@ -28,10 +28,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import de.basisdatensatz.obds.v2.ADTGEKID;
+import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ObdsMapperTest {
 
@@ -197,6 +201,120 @@ class ObdsMapperTest {
       var mappedObdsv3String = mapper.writeMappedXmlString(obdsv2);
 
       assertThat(mappedObdsv3String).isEqualTo(obdsV3String);
+    }
+  }
+
+  /**
+   * In oBDS v2 sind diese Elemente optional, in oBDS v3 werden sie benötigt. Die Prüfung darf nicht
+   * von aktivierten Assertions abhängen.
+   */
+  @Nested
+  class MissingRequiredElementsObdsMapperTest {
+
+    private ADTGEKID adtgekid;
+
+    @BeforeEach
+    void setUp() {
+      adtgekid = new ADTGEKID();
+      adtgekid.setAbsender(new ADTGEKID.Absender());
+      adtgekid.setMengePatient(new ADTGEKID.MengePatient());
+      adtgekid.setMengeMelder(new ADTGEKID.MengeMelder());
+    }
+
+    private void addPatient(
+        Consumer<ADTGEKID.MengePatient.Patient.PatientenStammdaten> customizer) {
+      var stammdaten = new ADTGEKID.MengePatient.Patient.PatientenStammdaten();
+      stammdaten.setPatientID("P1");
+      stammdaten.setPatientenGeburtsdatum("01.01.1980");
+      customizer.accept(stammdaten);
+
+      var patient = new ADTGEKID.MengePatient.Patient();
+      patient.setPatientenStammdaten(stammdaten);
+      patient.setMengeMeldung(new ADTGEKID.MengePatient.Patient.MengeMeldung());
+      adtgekid.getMengePatient().getPatient().add(patient);
+    }
+
+    @Test
+    void shouldMapMinimalDocument() {
+      addPatient(stammdaten -> {});
+
+      var actual = ObdsMapper.builder().build().map(adtgekid);
+
+      assertThat(actual.getMengePatient().getPatient()).hasSize(1);
+    }
+
+    @Test
+    void shouldThrowIfAbsenderIsMissing() {
+      adtgekid.setAbsender(null);
+
+      var exception =
+          assertThrows(
+              UnmappableItemException.class, () -> ObdsMapper.builder().build().map(adtgekid));
+      assertThat(exception).hasMessageContaining("Absender");
+    }
+
+    @Test
+    void shouldThrowIfMengePatientIsMissing() {
+      adtgekid.setMengePatient(null);
+
+      var exception =
+          assertThrows(
+              UnmappableItemException.class, () -> ObdsMapper.builder().build().map(adtgekid));
+      assertThat(exception).hasMessageContaining("Menge_Patient");
+    }
+
+    @Test
+    void shouldThrowIfMengeMelderIsMissing() {
+      adtgekid.setMengeMelder(null);
+
+      var exception =
+          assertThrows(
+              UnmappableItemException.class, () -> ObdsMapper.builder().build().map(adtgekid));
+      assertThat(exception).hasMessageContaining("Menge_Melder");
+    }
+
+    @Test
+    void shouldThrowIfAbsenderIsMissingEvenIfIgnoringUnmappablePatients() {
+      adtgekid.setAbsender(null);
+
+      assertThrows(
+          UnmappableItemException.class,
+          () -> ObdsMapper.builder().ignoreUnmappable(true).build().map(adtgekid));
+    }
+
+    @Test
+    void shouldThrowIfPatientenStammdatenAreMissing() {
+      var patient = new ADTGEKID.MengePatient.Patient();
+      patient.setMengeMeldung(new ADTGEKID.MengePatient.Patient.MengeMeldung());
+      adtgekid.getMengePatient().getPatient().add(patient);
+
+      var exception =
+          assertThrows(
+              UnmappableItemException.class, () -> ObdsMapper.builder().build().map(adtgekid));
+      assertThat(exception).hasMessageContaining("Patienten_Stammdaten");
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"not a date", "99.99.1980"})
+    void shouldThrowIfGeburtsdatumIsMissingOrInvalid(String geburtsdatum) {
+      addPatient(stammdaten -> stammdaten.setPatientenGeburtsdatum(geburtsdatum));
+
+      var exception =
+          assertThrows(
+              UnmappableItemException.class, () -> ObdsMapper.builder().build().map(adtgekid));
+      assertThat(exception).hasMessageContaining("Patienten_Geburtsdatum");
+      // Patientendaten dürfen nicht in der Meldung der Exception landen
+      assertThat(exception.getMessage()).doesNotContain("not a date").doesNotContain("99.99");
+    }
+
+    @Test
+    void shouldSkipPatientWithoutValidGeburtsdatumIfIgnoringUnmappablePatients() {
+      addPatient(stammdaten -> stammdaten.setPatientenGeburtsdatum(null));
+
+      var actual = ObdsMapper.builder().ignoreUnmappable(true).build().map(adtgekid);
+
+      assertThat(actual.getMengePatient().getPatient()).isEmpty();
     }
   }
 }

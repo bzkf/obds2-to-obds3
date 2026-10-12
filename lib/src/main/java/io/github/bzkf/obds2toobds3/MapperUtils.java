@@ -244,6 +244,21 @@ class MapperUtils {
   }
 
   /**
+   * Stellt sicher, dass ein für oBDS v3 benötigter Wert vorhanden ist.
+   *
+   * @param value Der zu prüfende Wert
+   * @param message Die Meldung der Exception, wenn der Wert fehlt
+   * @return der übergebene Wert, wenn er nicht {@code null} ist
+   * @throws UnmappableItemException wenn der Wert {@code null} ist
+   */
+  public static <T> T requireMappable(T value, String message) {
+    if (null == value) {
+      throw new UnmappableItemException(message);
+    }
+    return value;
+  }
+
+  /**
    * Runs given function if value is not null
    *
    * @param value The value to operate on

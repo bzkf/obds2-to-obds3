@@ -193,44 +193,64 @@ class MeldungMapper {
       return Optional.empty();
     }
 
+    return Optional.of(
+        mapTumorzuordnung(
+            meldung.getMeldungID(),
+            source.getTumorID(),
+            source.getDiagnosedatum(),
+            source.getPrimaertumorICDCode(),
+            source.getPrimaertumorICDVersion(),
+            source.getSeitenlokalisation()));
+  }
+
+  /**
+   * Gemeinsames Mapping der Tumorzuordnung. Wird für das oBDS v2 Element {@code Tumorzuordnung} und
+   * als Fallback für die gleichnamigen Angaben aus dem Element {@code Diagnose} verwendet. Eine
+   * fehlende Seitenlokalisation wird in beiden Fällen als 'U' (unbekannt) übernommen.
+   *
+   * @param meldungId Die Meldung-ID, wird nur für die Generierung einer fehlenden Tumor-ID benötigt
+   */
+  private TumorzuordnungTyp mapTumorzuordnung(
+      String meldungId,
+      String tumorId,
+      String diagnosedatum,
+      String icdCode,
+      String icdVersion,
+      de.basisdatensatz.obds.v2.SeitenlokalisationTyp seitenlokalisation) {
     var mappedTumorzuordnung = new TumorzuordnungTyp();
     // Übernehme Tumor-ID, wenn vorhanden - ansonsten generiere ID, wenn verlangt
     if (this.fixMissingId
-        && null == source.getTumorID()
-        && null != source.getDiagnosedatum()
-        && null != source.getPrimaertumorICDCode()
-        && null != meldung.getMeldungID()) {
+        && null == tumorId
+        && null != diagnosedatum
+        && null != icdCode
+        && null != meldungId) {
       var generatedTumorId =
-          DigestUtils.sha1Hex(
-                  String.format(
-                      "%s_%s_%s",
-                      source.getDiagnosedatum(),
-                      source.getPrimaertumorICDCode(),
-                      meldung.getMeldungID()))
+          DigestUtils.sha1Hex(String.format("%s_%s_%s", diagnosedatum, icdCode, meldungId))
               .subSequence(0, 16);
       mappedTumorzuordnung.setTumorID(String.format("TID_%s", generatedTumorId));
-    } else if (null != source.getTumorID()) {
-      mappedTumorzuordnung.setTumorID(source.getTumorID());
+    } else if (null != tumorId) {
+      mappedTumorzuordnung.setTumorID(tumorId);
     } else {
       LOG.error("TumorID is null or can't be created from the given data.");
       throw new UnmappableItemException(TUMORID_MUST_NOT_BE_NULL);
     }
     // Datum
-    MapperUtils.mapDateString(source.getDiagnosedatum())
-        .ifPresent(mappedTumorzuordnung::setDiagnosedatum);
+    MapperUtils.mapDateString(diagnosedatum).ifPresent(mappedTumorzuordnung::setDiagnosedatum);
     // ICD10
     var icd10 = new TumorICDTyp();
-    icd10.setCode(source.getPrimaertumorICDCode());
-    icd10.setVersion(source.getPrimaertumorICDVersion());
+    icd10.setCode(icdCode);
+    icd10.setVersion(icdVersion);
     mappedTumorzuordnung.setPrimaertumorICD(icd10);
     // Morphologie nicht in oBDS v2 ?
     // Seitenlokalisation: mapping über Enum - beide {'L'|'R'|'B'|'M'|'U'|'T'}
-    if (null != source.getSeitenlokalisation()) {
+    if (null != seitenlokalisation) {
       mappedTumorzuordnung.setSeitenlokalisation(
-          SeitenlokalisationTyp.fromValue(source.getSeitenlokalisation().value()));
+          SeitenlokalisationTyp.fromValue(seitenlokalisation.value()));
+    } else {
+      mappedTumorzuordnung.setSeitenlokalisation(SeitenlokalisationTyp.U);
     }
 
-    return Optional.of(mappedTumorzuordnung);
+    return mappedTumorzuordnung;
   }
 
   private List<Meldung> getMappedSYSTs(ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung source) {
@@ -781,45 +801,14 @@ class MeldungMapper {
     // In jeder (Unter-)Meldung
     var tumorzuordnung = source.getTumorzuordnung();
     if (tumorzuordnung != null) {
-      var mappedTumorzuordnung = new TumorzuordnungTyp();
-      // Übernehme Tumor-ID, wenn vorhanden
-      if (fixMissingId
-          && null == tumorzuordnung.getTumorID()
-          && null != tumorzuordnung.getDiagnosedatum()
-          && null != tumorzuordnung.getPrimaertumorICDCode()
-          && null != source.getMeldungID()) {
-        var generatedTumorId =
-            DigestUtils.sha1Hex(
-                    String.format(
-                        "%s_%s_%s",
-                        tumorzuordnung.getDiagnosedatum(),
-                        tumorzuordnung.getPrimaertumorICDCode(),
-                        source.getMeldungID()))
-                .subSequence(0, 16);
-        mappedTumorzuordnung.setTumorID(String.format("TID_%s", generatedTumorId));
-      } else if (null != tumorzuordnung.getTumorID()) {
-        mappedTumorzuordnung.setTumorID(tumorzuordnung.getTumorID());
-      } else {
-        throw new UnmappableItemException(TUMORID_MUST_NOT_BE_NULL);
-      }
-      // Datum
-      MapperUtils.mapDateString(tumorzuordnung.getDiagnosedatum())
-          .ifPresent(mappedTumorzuordnung::setDiagnosedatum);
-      // ICD10
-      var icd10 = new TumorICDTyp();
-      icd10.setCode(tumorzuordnung.getPrimaertumorICDCode());
-      icd10.setVersion(tumorzuordnung.getPrimaertumorICDVersion());
-      mappedTumorzuordnung.setPrimaertumorICD(icd10);
-
-      // Seitenlokalisation: mapping über Enum - beide {'L'|'R'|'B'|'M'|'U'|'T'}
-      if (null != tumorzuordnung.getSeitenlokalisation()) {
-        mappedTumorzuordnung.setSeitenlokalisation(
-            SeitenlokalisationTyp.fromValue(tumorzuordnung.getSeitenlokalisation().value()));
-      } else {
-        mappedTumorzuordnung.setSeitenlokalisation(SeitenlokalisationTyp.U);
-      }
-
-      mappedMeldung.setTumorzuordnung(mappedTumorzuordnung);
+      mappedMeldung.setTumorzuordnung(
+          mapTumorzuordnung(
+              source.getMeldungID(),
+              tumorzuordnung.getTumorID(),
+              tumorzuordnung.getDiagnosedatum(),
+              tumorzuordnung.getPrimaertumorICDCode(),
+              tumorzuordnung.getPrimaertumorICDVersion(),
+              tumorzuordnung.getSeitenlokalisation()));
     }
 
     return mappedMeldung;

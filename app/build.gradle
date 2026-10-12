@@ -29,7 +29,11 @@ test {
 jar {
     manifest {
         attributes(
-            'Main-Class': 'io.github.bzkf.obds2toobds3.Application'
+            'Main-Class': 'io.github.bzkf.obds2toobds3.Application',
+            // read by the lib's AbsenderMapper for the Software_Version; the lib's own manifest
+            // is not part of this fat jar
+            'Implementation-Title': 'obds2-to-obds3-app',
+            'Implementation-Version': project.version
         )
     }
     from {

@@ -70,12 +70,26 @@ public class ObdsMapper {
       throw new IllegalArgumentException("ADT_GEKID source cannot be null");
     }
 
+    // In oBDS v2 sind diese Elemente optional, in oBDS v3 werden sie jedoch benötigt.
+    var absender =
+        MapperUtils.requireMappable(
+            adtgekid.getAbsender(),
+            "ADT_GEKID element 'Absender' must not be null - required for oBDS v3");
+    var mengePatient =
+        MapperUtils.requireMappable(
+            adtgekid.getMengePatient(),
+            "ADT_GEKID element 'Menge_Patient' must not be null - required for oBDS v3");
+    var mengeMelder =
+        MapperUtils.requireMappable(
+            adtgekid.getMengeMelder(),
+            "ADT_GEKID element 'Menge_Melder' must not be null - required for oBDS v3");
+
     OBDS obds = new OBDS();
     obds.setSchemaVersion("3.0.4");
 
     // In oBDSv2 nicht so definiert
     // Letztes Meldedatum aus oBDSv2 Menge_Meldung?
-    adtgekid.getMengePatient().getPatient().stream()
+    mengePatient.getPatient().stream()
         .map(
             patient ->
                 patient.getMengeMeldung().getMeldung().stream()
@@ -92,14 +106,9 @@ public class ObdsMapper {
                 obds.setMeldedatum(datumTagOderMonatOderJahrOderNichtGenauTyp.getValue()));
 
     // Absender der Meldung
-    var absender = adtgekid.getAbsender();
-    assert absender != null;
     obds.setAbsender(AbsenderMapper.map(absender));
 
     // Menge Patient
-    var mengePatient = adtgekid.getMengePatient();
-    assert mengePatient != null;
-
     var mappedMengePatient = new OBDS.MengePatient();
     mappedMengePatient
         .getPatient()
@@ -126,9 +135,6 @@ public class ObdsMapper {
     obds.setMengePatient(mappedMengePatient);
 
     // Menge Melder
-    var mengeMelder = adtgekid.getMengeMelder();
-    assert mengeMelder != null;
-
     var mappedMengeMelder = new OBDS.MengeMelder();
     mappedMengeMelder
         .getMelder()

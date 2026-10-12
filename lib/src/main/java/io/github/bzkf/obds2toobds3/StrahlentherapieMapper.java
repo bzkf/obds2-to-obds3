@@ -1,9 +1,6 @@
 package io.github.bzkf.obds2toobds3;
 
 import de.basisdatensatz.obds.v2.ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeST.ST.MengeBestrahlung.Bestrahlung;
-import de.basisdatensatz.obds.v2.ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeST.ST.MengeNebenwirkung;
-import de.basisdatensatz.obds.v3.NebenwirkungTyp;
-import de.basisdatensatz.obds.v3.NebenwirkungTyp.MengeNebenwirkung.Nebenwirkung;
 import de.basisdatensatz.obds.v3.STTyp;
 import de.basisdatensatz.obds.v3.STTyp.Meldeanlass;
 import de.basisdatensatz.obds.v3.STTyp.MengeBestrahlung;
@@ -73,7 +70,8 @@ public class StrahlentherapieMapper {
       }
 
       if (source.getMengeNebenwirkung() != null) {
-        var mappedNebenwirkungen = mapNebenwirkungen(source.getMengeNebenwirkung());
+        var mappedNebenwirkungen =
+            NebenwirkungMapper.map(source.getMengeNebenwirkung().getSTNebenwirkung(), "ST");
         stTyp.setNebenwirkungen(mappedNebenwirkungen);
       }
 
@@ -81,57 +79,6 @@ public class StrahlentherapieMapper {
       MDC.remove("STID");
     }
 
-    return result;
-  }
-
-  private static NebenwirkungTyp mapNebenwirkungen(MengeNebenwirkung mengeNebenwirkung) {
-    var mengeNebenwirkungV3 = new de.basisdatensatz.obds.v3.NebenwirkungTyp.MengeNebenwirkung();
-
-    var result = new NebenwirkungTyp();
-
-    for (var nebenwirkungV2 : mengeNebenwirkung.getSTNebenwirkung()) {
-      var nebenwirkungV3 = new Nebenwirkung();
-
-      if (nebenwirkungV2.getNebenwirkungGrad() != null
-          && (nebenwirkungV2.getNebenwirkungGrad().equals("K")
-              || nebenwirkungV2.getNebenwirkungGrad().equals("U"))) {
-        if (mengeNebenwirkung.getSTNebenwirkung().size() > 1) {
-          LOG.warn(
-              "ST has multiple Nebenwirkungen, but should only contain one if set to 'K' or 'U'.");
-        }
-
-        if (nebenwirkungV2.getNebenwirkungArt() != null) {
-          LOG.warn(
-              "Nebenwirkung Grad is 'K' or 'U', but the Art is set. This information is lost after the mapping.");
-        }
-
-        result.setGradMaximal2OderUnbekannt(nebenwirkungV2.getNebenwirkungGrad());
-        return result;
-      }
-
-      var art = new NebenwirkungTyp.MengeNebenwirkung.Nebenwirkung.Art();
-      if (nebenwirkungV2.getNebenwirkungArt() != null) {
-        art.setBezeichnung(nebenwirkungV2.getNebenwirkungArt());
-      } else {
-        LOG.warn("Nebenwirkung_Art is unset. Defaulting to 'Sonstige'.");
-        art.setBezeichnung("Sonstige");
-      }
-
-      nebenwirkungV3.setArt(art);
-
-      if (nebenwirkungV2.getNebenwirkungVersion() != null) {
-        nebenwirkungV3.setVersion(nebenwirkungV2.getNebenwirkungVersion());
-      } else {
-        LOG.warn("Nebenwirkung_Version is unset. Defaulting to 'Sonstige'.");
-        nebenwirkungV3.setVersion("Sonstige");
-      }
-
-      nebenwirkungV3.setGrad(nebenwirkungV2.getNebenwirkungGrad());
-
-      mengeNebenwirkungV3.getNebenwirkung().add(nebenwirkungV3);
-    }
-
-    result.setMengeNebenwirkung(mengeNebenwirkungV3);
     return result;
   }
 
