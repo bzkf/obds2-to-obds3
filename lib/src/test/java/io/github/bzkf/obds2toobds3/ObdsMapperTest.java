@@ -28,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import de.basisdatensatz.obds.v2.ADTGEKID;
+import java.util.TimeZone;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -89,6 +90,42 @@ class ObdsMapperTest {
       var obdsV3MappedString = mapper.writeMappedXmlString(obdsv2);
 
       assertThat(obdsV3MappedString).isEqualTo(obdsV3String);
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+          "UTC",
+          "Europe/Berlin",
+          "America/Los_Angeles",
+          "Pacific/Auckland",
+          "Pacific/Kiritimati"
+        })
+    void shouldMapDatesIndependentlyOfDefaultTimeZone(String timeZone) throws Exception {
+      var obdsV2String =
+          new String(
+              getClass()
+                  .getClassLoader()
+                  .getResource("testdaten/obdsv2_1.xml")
+                  .openStream()
+                  .readAllBytes());
+      var obdsV3String =
+          new String(
+              getClass()
+                  .getClassLoader()
+                  .getResource("testdaten/obdsv3_1.xml")
+                  .openStream()
+                  .readAllBytes());
+
+      var previous = TimeZone.getDefault();
+      try {
+        TimeZone.setDefault(TimeZone.getTimeZone(timeZone));
+
+        var obdsv2 = mapper.readValue(obdsV2String, ADTGEKID.class);
+        assertThat(mapper.writeMappedXmlString(obdsv2)).isEqualTo(obdsV3String);
+      } finally {
+        TimeZone.setDefault(previous);
+      }
     }
 
     @ParameterizedTest
