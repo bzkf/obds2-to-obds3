@@ -73,6 +73,15 @@
               </Weitere_Klassifikation>
             </Menge_Weitere_Klassifikation>
             <Allgemeiner_Leistungszustand>U</Allgemeiner_Leistungszustand>
+            <Modul_Allgemein>
+              <Studienteilnahme>
+                <NU>N</NU>
+              </Studienteilnahme>
+            </Modul_Allgemein>
+            <Modul_Prostata>
+              <PSA>0.160</PSA>
+              <DatumPSA Datumsgenauigkeit="E">2021-08-26</DatumPSA>
+            </Modul_Prostata>
           </Verlauf>
         </Meldung>
       </Menge_Meldung>

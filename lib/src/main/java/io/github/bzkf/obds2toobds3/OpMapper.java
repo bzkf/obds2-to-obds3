@@ -85,9 +85,14 @@ public class OpMapper {
       opTyp.setResidualstatus(residualstatus);
     }
 
-    if (source.getModulProstata() != null) {
-      opTyp.setModulProstata(ModulMapper.map(source.getModulProstata()));
-    }
+    MapperUtils.ifNotNull(
+        source.getModulAllgemein(), m -> opTyp.setModulAllgemein(ModulMapper.map(m)));
+    MapperUtils.ifNotNull(source.getModulMamma(), m -> opTyp.setModulMamma(ModulMapper.map(m)));
+    MapperUtils.ifNotNull(source.getModulDarm(), m -> opTyp.setModulDarm(ModulMapper.map(m)));
+    MapperUtils.ifNotNull(
+        source.getModulProstata(), m -> opTyp.setModulProstata(ModulMapper.map(m)));
+    MapperUtils.ifNotNull(
+        source.getModulMalignesMelanom(), m -> opTyp.setModulMalignesMelanom(ModulMapper.map(m)));
 
     MDC.remove("OPID");
 

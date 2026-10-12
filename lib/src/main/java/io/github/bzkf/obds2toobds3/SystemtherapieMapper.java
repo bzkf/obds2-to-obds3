@@ -62,6 +62,9 @@ public class SystemtherapieMapper {
         systTyp.setNebenwirkungen(mappedNebenwirkungen);
       }
 
+      MapperUtils.ifNotNull(
+          source.getModulAllgemein(), m -> systTyp.setModulAllgemein(ModulMapper.map(m)));
+
       result.add(systTyp);
       MDC.remove("SYSTID");
     }

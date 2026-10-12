@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ADT_GEKID xmlns="http://www.gekid.de/namespace" Schema_Version="2.2.3">
+  <Absender Absender_ID="TEST" Software_ID="ONKOSTAR" Installations_ID="2011">
+    <Absender_Bezeichnung>TEST</Absender_Bezeichnung>
+    <Absender_Anschrift>Musterstraße 1, 012345 Musterhausen</Absender_Anschrift>
+  </Absender>
+  <Menge_Patient>
+    <Patient>
+      <Patienten_Stammdaten Patient_ID="20001234">
+        <KrankenversichertenNr>E123456789</KrankenversichertenNr>
+        <KrankenkassenNr>103456789</KrankenkassenNr>
+        <Patienten_Nachname>Tester</Patienten_Nachname>
+        <Patienten_Vornamen>Patrick</Patienten_Vornamen>
+        <Patienten_Geschlecht>M</Patienten_Geschlecht>
+        <Patienten_Geburtsdatum>01.01.1980</Patienten_Geburtsdatum>
+        <Menge_Adresse>
+          <Adresse>
+            <Patienten_Strasse>Testweg</Patienten_Strasse>
+            <Patienten_Hausnummer>1</Patienten_Hausnummer>
+            <Patienten_Land>DE</Patienten_Land>
+            <Patienten_PLZ>01234</Patienten_PLZ>
+            <Patienten_Ort>Musterhausen</Patienten_Ort>
+          </Adresse>
+        </Menge_Adresse>
+      </Patienten_Stammdaten>
+      <Menge_Meldung>
+        <!-- In der Pathologie sind in oBDS v3 nur eingeschränkte Module erlaubt. -->
+        <Meldung Meldung_ID="PATHO1" Melder_ID="TEST">
+          <Meldedatum>11.06.2024</Meldedatum>
+          <Meldebegruendung>D</Meldebegruendung>
+          <Meldeanlass>histologie_zytologie</Meldeanlass>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD_Code>C17.1</Primaertumor_ICD_Code>
+            <Primaertumor_ICD_Version>10 2015 GM</Primaertumor_ICD_Version>
+            <Diagnosedatum>10.06.2024</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <Diagnose>
+            <Diagnosesicherung>7</Diagnosesicherung>
+            <Modul_Mamma>
+              <Praetherapeutischer_Menopausenstatus>3</Praetherapeutischer_Menopausenstatus>
+              <HormonrezeptorStatus_Oestrogen>P</HormonrezeptorStatus_Oestrogen>
+              <HormonrezeptorStatus_Progesteron>N</HormonrezeptorStatus_Progesteron>
+              <Her2neuStatus>U</Her2neuStatus>
+              <PraeopDrahtmarkierung>M</PraeopDrahtmarkierung>
+              <IntraopPraeparatkontrolle>S</IntraopPraeparatkontrolle>
+              <TumorgroesseInvasiv>25</TumorgroesseInvasiv>
+              <TumorgroesseDCIS>12</TumorgroesseDCIS>
+            </Modul_Mamma>
+            <Modul_Darm>
+              <RektumAbstandAnokutanlinie>8</RektumAbstandAnokutanlinie>
+              <RektumAbstandAboralerResektionsrand>12</RektumAbstandAboralerResektionsrand>
+              <RektumAbstandCircResektionsebene>3</RektumAbstandCircResektionsebene>
+              <RektumQualitaetTME>2</RektumQualitaetTME>
+              <ArtEingriff>E</ArtEingriff>
+              <ASA>2</ASA>
+              <RASMutation>W</RASMutation>
+            </Modul_Darm>
+            <Modul_Prostata>
+              <GleasonScore>
+                <GleasonGradPrimaer>3</GleasonGradPrimaer>
+                <GleasonGradSekundaer>4</GleasonGradSekundaer>
+                <GleasonScoreErgebnis>7b</GleasonScoreErgebnis>
+              </GleasonScore>
+              <AnlassGleasonScore>S</AnlassGleasonScore>
+              <DatumStanzen>2024-06-05</DatumStanzen>
+              <AnzahlStanzen>12</AnzahlStanzen>
+              <AnzahlPosStanzen>3</AnzahlPosStanzen>
+              <CaBefallStanze>
+                <U>U</U>
+              </CaBefallStanze>
+              <PSA>6.5</PSA>
+              <KomplPostOP_ClavienDindo>N</KomplPostOP_ClavienDindo>
+            </Modul_Prostata>
+            <Modul_Malignes_Melanom>
+              <Sicherheitsabstand_Primaertumor>10</Sicherheitsabstand_Primaertumor>
+              <Tumordicke>1.4</Tumordicke>
+              <LDH>250</LDH>
+              <Ulzeration>J</Ulzeration>
+            </Modul_Malignes_Melanom>
+            <Modul_Allgemein>
+              <DatumSozialdienstkontakt>
+                <Datum>2024-06-12</Datum>
+              </DatumSozialdienstkontakt>
+            </Modul_Allgemein>
+          </Diagnose>
+          <Menge_Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Einrichtung</Art>
+              <Wert>Pathologisches Institut</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Histologie_Material_Text</Art>
+              <Wert>1 B, 8 OT</Wert>
+            </Zusatzitem>
+          </Menge_Zusatzitem>
+        </Meldung>
+      </Menge_Meldung>
+    </Patient>
+  </Menge_Patient>
+  <Menge_Melder>
+    <Melder Melder_ID="TEST">
+      <Melder_IKNR>103456789</Melder_IKNR>
+      <Meldende_Stelle>TEST</Meldende_Stelle>
+    </Melder>
+  </Menge_Melder>
+</ADT_GEKID>

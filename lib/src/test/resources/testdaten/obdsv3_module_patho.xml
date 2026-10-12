@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<oBDS xmlns="http://www.basisdatensatz.de/oBDS/XML" Schema_Version="3.0.4">
+  <Absender Absender_ID="TEST" Software_ID="obds2-to-obds3" Software_Version="unknown">
+    <Bezeichnung>TEST</Bezeichnung>
+    <Anschrift>Musterstraße 1, 012345 Musterhausen</Anschrift>
+  </Absender>
+  <Meldedatum>2024-06-11</Meldedatum>
+  <Menge_Patient>
+    <Patient Patient_ID="20001234">
+      <Patienten_Stammdaten>
+        <Versichertendaten_GKV>
+          <IKNR>103456789</IKNR>
+          <GKV_Versichertennummer>E123456789</GKV_Versichertennummer>
+        </Versichertendaten_GKV>
+        <Nachname>Tester</Nachname>
+        <Vornamen>Patrick</Vornamen>
+        <Geschlecht>M</Geschlecht>
+        <Geburtsdatum Datumsgenauigkeit="E">1980-01-01</Geburtsdatum>
+        <Adresse>
+          <Strasse>Testweg</Strasse>
+          <Hausnummer>1</Hausnummer>
+          <Land>DE</Land>
+          <PLZ>01234</PLZ>
+          <Ort>Musterhausen</Ort>
+        </Adresse>
+      </Patienten_Stammdaten>
+      <Menge_Meldung>
+        <Meldung Meldung_ID="PATHO1" Melder_ID="TEST">
+          <Meldebegruendung>D</Meldebegruendung>
+          <Eigene_Leistung>J</Eigene_Leistung>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD>
+              <Code>C17.1</Code>
+              <Version>10 2015 GM</Version>
+            </Primaertumor_ICD>
+            <Diagnosedatum Datumsgenauigkeit="E">2024-06-10</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <Pathologie>
+            <Diagnosesicherung>7</Diagnosesicherung>
+            <Einsender>
+              <strukturiert>
+                <Einrichtung>Pathologisches Institut</Einrichtung>
+                <Land>DE</Land>
+              </strukturiert>
+            </Einsender>
+            <Modul_Mamma>
+              <HormonrezeptorStatus_Oestrogen>P</HormonrezeptorStatus_Oestrogen>
+              <HormonrezeptorStatus_Progesteron>N</HormonrezeptorStatus_Progesteron>
+              <Her2neuStatus>U</Her2neuStatus>
+              <TumorgroesseInvasiv>25</TumorgroesseInvasiv>
+              <TumorgroesseDCIS>12</TumorgroesseDCIS>
+            </Modul_Mamma>
+            <Modul_Darm>
+              <RektumAbstandAboralerResektionsrand>12</RektumAbstandAboralerResektionsrand>
+              <RektumAbstandCircResektionsebene>3</RektumAbstandCircResektionsebene>
+              <RektumQualitaetTME>2</RektumQualitaetTME>
+              <RASMutation>W</RASMutation>
+            </Modul_Darm>
+            <Modul_Prostata>
+              <GleasonScore>
+                <GradPrimaer>3</GradPrimaer>
+                <GradSekundaer>4</GradSekundaer>
+                <ScoreErgebnis>7b</ScoreErgebnis>
+              </GleasonScore>
+              <AnlassGleasonScore>S</AnlassGleasonScore>
+              <DatumStanzen>2024-06-05</DatumStanzen>
+              <AnzahlStanzen>12</AnzahlStanzen>
+              <AnzahlPosStanzen>3</AnzahlPosStanzen>
+              <CaBefallStanze>
+                <U>U</U>
+              </CaBefallStanze>
+            </Modul_Prostata>
+            <Modul_Malignes_Melanom>
+              <Sicherheitsabstand_Primaertumor>10</Sicherheitsabstand_Primaertumor>
+              <Tumordicke>1.4</Tumordicke>
+              <Ulzeration>J</Ulzeration>
+            </Modul_Malignes_Melanom>
+          </Pathologie>
+          <Menge_Zusatzitem>
+            <Zusatzitem>
+              <Art>Histologie_Material_Text</Art>
+              <Wert>1 B, 8 OT</Wert>
+            </Zusatzitem>
+          </Menge_Zusatzitem>
+        </Meldung>
+      </Menge_Meldung>
+    </Patient>
+  </Menge_Patient>
+  <Menge_Melder>
+    <Melder ID="TEST">
+      <Ident_Nummern>
+        <IKNR>103456789</IKNR>
+      </Ident_Nummern>
+    </Melder>
+  </Menge_Melder>
+</oBDS>

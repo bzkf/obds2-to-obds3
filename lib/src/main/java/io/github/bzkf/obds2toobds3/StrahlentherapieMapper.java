@@ -75,6 +75,9 @@ public class StrahlentherapieMapper {
         stTyp.setNebenwirkungen(mappedNebenwirkungen);
       }
 
+      MapperUtils.ifNotNull(
+          source.getModulAllgemein(), m -> stTyp.setModulAllgemein(ModulMapper.map(m)));
+
       result.add(stTyp);
       MDC.remove("STID");
     }

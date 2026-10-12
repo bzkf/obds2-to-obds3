@@ -587,7 +587,17 @@ class MeldungMapper {
               // Nicht in oBDS v2 enthalten ?
               // mappedVerlauf.setMengeGenetik(..);
 
-              // TODO Weitere Module ...
+              // Module. In oBDS v2 sind für den Verlauf nur Prostata, Malignes Melanom und
+              // Allgemein definiert.
+              MapperUtils.ifNotNull(
+                  verlauf.getModulAllgemein(),
+                  m -> mappedVerlauf.setModulAllgemein(ModulMapper.map(m)));
+              MapperUtils.ifNotNull(
+                  verlauf.getModulProstata(),
+                  m -> mappedVerlauf.setModulProstata(ModulMapper.map(m)));
+              MapperUtils.ifNotNull(
+                  verlauf.getModulMalignesMelanom(),
+                  m -> mappedVerlauf.setModulMalignesMelanom(ModulMapper.map(m)));
               return mappedVerlauf;
             })
         .map(
@@ -667,10 +677,18 @@ class MeldungMapper {
           mapMengeWeitereKlassifikation(diagnose.getMengeWeitereKlassifikation()));
     }
 
-    // Modul Prostata
-    if (diagnose.getModulProstata() != null) {
-      mappedDiagnose.setModulProstata(ModulMapper.map(diagnose.getModulProstata()));
-    }
+    // Module
+    MapperUtils.ifNotNull(
+        diagnose.getModulAllgemein(), m -> mappedDiagnose.setModulAllgemein(ModulMapper.map(m)));
+    MapperUtils.ifNotNull(
+        diagnose.getModulMamma(), m -> mappedDiagnose.setModulMamma(ModulMapper.map(m)));
+    MapperUtils.ifNotNull(
+        diagnose.getModulDarm(), m -> mappedDiagnose.setModulDarm(ModulMapper.map(m)));
+    MapperUtils.ifNotNull(
+        diagnose.getModulProstata(), m -> mappedDiagnose.setModulProstata(ModulMapper.map(m)));
+    MapperUtils.ifNotNull(
+        diagnose.getModulMalignesMelanom(),
+        m -> mappedDiagnose.setModulMalignesMelanom(ModulMapper.map(m)));
 
     // Nicht in oBDS v2 ?
     // mappedDiagnose.setMengeGenetik(..);
@@ -728,6 +746,23 @@ class MeldungMapper {
     if (diagnose.getMengeWeitereKlassifikation() != null) {
       mappedPathologie.setMengeWeitereKlassifikation(
           mapMengeWeitereKlassifikation(diagnose.getMengeWeitereKlassifikation()));
+    }
+
+    // Module, in der Pathologie sind nur eingeschränkte Varianten erlaubt
+    MapperUtils.ifNotNull(
+        diagnose.getModulMamma(), m -> mappedPathologie.setModulMamma(ModulMapper.mapPatho(m)));
+    MapperUtils.ifNotNull(
+        diagnose.getModulDarm(), m -> mappedPathologie.setModulDarm(ModulMapper.mapPatho(m)));
+    MapperUtils.ifNotNull(
+        diagnose.getModulProstata(),
+        m -> mappedPathologie.setModulProstata(ModulMapper.mapPatho(m)));
+    MapperUtils.ifNotNull(
+        diagnose.getModulMalignesMelanom(),
+        m -> mappedPathologie.setModulMalignesMelanom(ModulMapper.mapPatho(m)));
+    // In oBDS v2 gibt es kein Modul Allgemein für die Pathologie, das Element der Diagnose geht
+    // daher verloren.
+    if (diagnose.getModulAllgemein() != null) {
+      LOG.warn("Modul_Allgemein is not available in a Pathologie in oBDS v3 and is dropped.");
     }
 
     // Einsender aus Zusatzitems
