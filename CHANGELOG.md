@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.23](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.22...v0.1.23) (2026-10-12)
+
+
+### Bug Fixes
+
+* dont make date conversion depend on the local timezone ([#144](https://github.com/bzkf/obds2-to-obds3/issues/144)) ([20ca1b6](https://github.com/bzkf/obds2-to-obds3/commit/20ca1b6b0f1c3c7d37330470b95d0532081fdf69))
+* refactorings and include more free text as Anmerkungen from the source ([#142](https://github.com/bzkf/obds2-to-obds3/issues/142)) ([a71470e](https://github.com/bzkf/obds2-to-obds3/commit/a71470e81402f69407f7984d1b322d5a0be8f4b6))
+
 ## [0.1.22](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.21...v0.1.22) (2026-06-03)
 
 
