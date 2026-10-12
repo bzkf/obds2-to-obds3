@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <oBDS xmlns="http://www.basisdatensatz.de/oBDS/XML" Schema_Version="3.0.4">
-  <Absender Absender_ID="103067" Software_ID="obds2-to-obds3" Software_Version="unknown">
+  <Absender Absender_ID="103067" Software_ID="obds2-to-obds3" Software_Version="unknown" Installations_ID="2.6.2">
     <Bezeichnung>RBK</Bezeichnung>
     <Anschrift>Auerbachstraße 110, 70376 Stuttgart</Anschrift>
   </Absender>

@@ -28,11 +28,14 @@ import de.basisdatensatz.obds.v3.DatumTagOderMonatGenauTyp;
 import de.basisdatensatz.obds.v3.DatumTagOderMonatGenauTypSchaetzOptional;
 import de.basisdatensatz.obds.v3.DatumTagOderMonatOderJahrOderNichtGenauTyp;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -45,6 +48,9 @@ class MapperUtils {
 
   public static final String OBDS2_DATE_REGEX =
       "(?<day>([0-2]\\d)|(3[01]))\\.(?<month>(0\\d)|(1[0-2]))\\.(?<year>(18|19|20)\\d\\d)";
+
+  /** Maximale Länge einer Anmerkung in oBDS v3 (<code>FreitextAnmerkung_Typ</code>) */
+  static final int MAX_ANMERKUNG_LENGTH = 2000;
 
   private MapperUtils() {}
 
@@ -241,6 +247,43 @@ class MapperUtils {
   public static Optional<String> trimToMatchDatatype(String datatypeName, String string) {
     return SchemaValidator.regexpPattern(datatypeName, SchemaValidator.SchemaVersion.OBDS_3_0_4)
         .map(pattern -> string.replaceAll(String.format("[^%s]", pattern.pattern()), ""));
+  }
+
+  /**
+   * Fügt Anmerkungen zu einem Text zusammen. Leere Anmerkungen werden ignoriert, die übrigen
+   * getrimmt und durch einen Zeilenumbruch getrennt. Ist das Ergebnis länger als in oBDS v3
+   * erlaubt, wird es gekürzt und eine Warnung ausgegeben, da die Meldung sonst nicht schemakonform
+   * wäre.
+   *
+   * @return die zusammengefügte Anmerkung oder <code>null</code>, wenn keine Anmerkung vorhanden
+   *     ist
+   */
+  public static String joinAnmerkungen(String... anmerkungen) {
+    var joined =
+        Arrays.stream(anmerkungen)
+            .filter(Objects::nonNull)
+            .map(String::trim)
+            .filter(anmerkung -> !anmerkung.isEmpty())
+            .collect(Collectors.joining("\n"));
+
+    if (joined.isEmpty()) {
+      return null;
+    }
+
+    if (joined.length() > MAX_ANMERKUNG_LENGTH) {
+      LOG.warn(
+          "Anmerkung has {} characters, but only {} are allowed in oBDS v3. The text is truncated.",
+          joined.length(),
+          MAX_ANMERKUNG_LENGTH);
+      var end = MAX_ANMERKUNG_LENGTH;
+      // keine Surrogate-Paare zerschneiden
+      if (Character.isHighSurrogate(joined.charAt(end - 1))) {
+        end--;
+      }
+      return joined.substring(0, end);
+    }
+
+    return joined;
   }
 
   /**

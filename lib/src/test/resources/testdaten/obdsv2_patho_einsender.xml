@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ADT_GEKID xmlns="http://www.gekid.de/namespace" Schema_Version="2.2.3">
+  <Absender Absender_ID="TEST" Software_ID="ONKOSTAR" Installations_ID="2011">
+    <Absender_Bezeichnung>TEST</Absender_Bezeichnung>
+    <Absender_Anschrift>Musterstraße 1, 012345 Musterhausen</Absender_Anschrift>
+  </Absender>
+  <Menge_Patient>
+    <Patient>
+      <Patienten_Stammdaten Patient_ID="20001234">
+        <KrankenversichertenNr>E123456789</KrankenversichertenNr>
+        <KrankenkassenNr>103456789</KrankenkassenNr>
+        <Patienten_Nachname>Tester</Patienten_Nachname>
+        <Patienten_Vornamen>Patrick</Patienten_Vornamen>
+        <Patienten_Geschlecht>M</Patienten_Geschlecht>
+        <Patienten_Geburtsdatum>01.01.1980</Patienten_Geburtsdatum>
+        <Menge_Adresse>
+          <Adresse>
+            <Patienten_Strasse>Testweg</Patienten_Strasse>
+            <Patienten_Hausnummer>1</Patienten_Hausnummer>
+            <Patienten_Land>DE</Patienten_Land>
+            <Patienten_PLZ>01234</Patienten_PLZ>
+            <Patienten_Ort>Musterhausen</Patienten_Ort>
+          </Adresse>
+        </Menge_Adresse>
+      </Patienten_Stammdaten>
+      <Menge_Meldung>
+        <Meldung Meldung_ID="EINS1" Melder_ID="TEST">
+          <Meldedatum>11.06.2024</Meldedatum>
+          <Meldebegruendung>D</Meldebegruendung>
+          <Meldeanlass>histologie_zytologie</Meldeanlass>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD_Code>C17.1</Primaertumor_ICD_Code>
+            <Primaertumor_ICD_Version>10 2015 GM</Primaertumor_ICD_Version>
+            <Diagnosedatum>10.06.2024</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <Diagnose>
+            <Primaertumor_Topographie_ICD_O>C16.1</Primaertumor_Topographie_ICD_O>
+            <Primaertumor_Topographie_ICD_O_Version>32</Primaertumor_Topographie_ICD_O_Version>
+            <Primaertumor_Topographie_ICD_O_Freitext>Magenfundus</Primaertumor_Topographie_ICD_O_Freitext>
+            <Diagnosesicherung>7</Diagnosesicherung>
+          </Diagnose>
+          <Menge_Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Titel</Art>
+              <Wert>Dr.</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Vorname</Art>
+              <Wert>Erika</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Nachname</Art>
+              <Wert>Musterfrau</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Einrichtung</Art>
+              <Wert>Pathologisches Institut</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Klinik_Abteilung_Praxis</Art>
+              <Wert>Abteilung Histologie</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Strasse</Art>
+              <Wert>Teststraße</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Hausnummer</Art>
+              <Wert>1</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_PLZ</Art>
+              <Wert>12345</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Ort</Art>
+              <Wert>Musterhausen</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Arzt</Art>
+              <Wert>Dr. Erika Musterfrau</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Anschrift</Art>
+              <Wert>Teststraße 1, 12345 Musterhausen</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Adresszusatz</Art>
+              <Wert/>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Histologie_Material_Text</Art>
+              <Wert>1 B, 8 OT</Wert>
+            </Zusatzitem>
+          </Menge_Zusatzitem>
+        </Meldung>
+        <Meldung Meldung_ID="EINS2" Melder_ID="TEST">
+          <Meldedatum>11.06.2024</Meldedatum>
+          <Meldebegruendung>D</Meldebegruendung>
+          <Meldeanlass>histologie_zytologie</Meldeanlass>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD_Code>C17.1</Primaertumor_ICD_Code>
+            <Primaertumor_ICD_Version>10 2015 GM</Primaertumor_ICD_Version>
+            <Diagnosedatum>10.06.2024</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <Diagnose>
+            <Diagnosesicherung>7</Diagnosesicherung>
+          </Diagnose>
+          <Menge_Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Einrichtung</Art>
+              <Wert>Pathologisches Institut</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Ort</Art>
+              <Wert>Musterhausen</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Titel</Art>
+              <Wert/>
+            </Zusatzitem>
+          </Menge_Zusatzitem>
+        </Meldung>
+        <Meldung Meldung_ID="EINS3" Melder_ID="TEST">
+          <Meldedatum>11.06.2024</Meldedatum>
+          <Meldebegruendung>D</Meldebegruendung>
+          <Meldeanlass>histologie_zytologie</Meldeanlass>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD_Code>C17.1</Primaertumor_ICD_Code>
+            <Primaertumor_ICD_Version>10 2015 GM</Primaertumor_ICD_Version>
+            <Diagnosedatum>10.06.2024</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <Diagnose>
+            <Diagnosesicherung>7</Diagnosesicherung>
+          </Diagnose>
+        </Meldung>
+      </Menge_Meldung>
+    </Patient>
+  </Menge_Patient>
+  <Menge_Melder>
+    <Melder Melder_ID="TEST">
+      <Melder_IKNR>103456789</Melder_IKNR>
+      <Meldende_Stelle>TEST</Meldende_Stelle>
+    </Melder>
+  </Menge_Melder>
+</ADT_GEKID>

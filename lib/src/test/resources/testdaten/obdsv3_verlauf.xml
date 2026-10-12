@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <oBDS xmlns="http://www.basisdatensatz.de/oBDS/XML" Schema_Version="3.0.4">
-  <Absender Absender_ID="TEST" Software_ID="obds2-to-obds3" Software_Version="unknown">
+  <Absender Absender_ID="TEST" Software_ID="obds2-to-obds3" Software_Version="unknown" Installations_ID="2011">
     <Bezeichnung>TEST</Bezeichnung>
     <Anschrift>Musterstraße 1, 012345 Musterhausen</Anschrift>
   </Absender>
@@ -44,6 +44,7 @@
             <Diagnosesicherung>1</Diagnosesicherung>
             <Allgemeiner_Leistungszustand>0</Allgemeiner_Leistungszustand>
           </Diagnose>
+          <Anmerkung>Test</Anmerkung>
         </Meldung>
         <Meldung Meldung_ID="TEST1727528_V0001" Melder_ID="TEST">
           <Meldebegruendung>I</Meldebegruendung>
@@ -62,6 +63,7 @@
             <Gesamtbeurteilung_Tumorstatus>B</Gesamtbeurteilung_Tumorstatus>
             <Allgemeiner_Leistungszustand>1</Allgemeiner_Leistungszustand>
           </Verlauf>
+          <Anmerkung>Verlaufsanmerkung 1</Anmerkung>
         </Meldung>
         <Meldung Meldung_ID="TEST1727528_V0002" Melder_ID="TEST">
           <Meldebegruendung>I</Meldebegruendung>
@@ -80,6 +82,7 @@
             <Gesamtbeurteilung_Tumorstatus>B</Gesamtbeurteilung_Tumorstatus>
             <Allgemeiner_Leistungszustand>1</Allgemeiner_Leistungszustand>
           </Verlauf>
+          <Anmerkung>Verlaufsanmerkung 2</Anmerkung>
         </Meldung>
         <Meldung Meldung_ID="TEST1727528__D" Melder_ID="TEST">
           <Meldebegruendung>I</Meldebegruendung>

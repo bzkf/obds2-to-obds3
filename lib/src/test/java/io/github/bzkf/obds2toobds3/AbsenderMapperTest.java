@@ -28,10 +28,12 @@ class AbsenderMapperTest {
   void shouldSetSoftwareIdAndVersion() {
     var source = new ADTGEKID.Absender();
     source.setAbsenderID("ABSENDER");
+    source.setInstallationsID("2011");
 
     var actual = AbsenderMapper.map(source);
 
     assertThat(actual.getAbsenderID()).isEqualTo("ABSENDER");
+    assertThat(actual.getInstallationsID()).isEqualTo("2011");
     assertThat(actual.getSoftwareID()).isEqualTo(AbsenderMapper.SOFTWARE_ID);
     assertThat(actual.getSoftwareVersion()).isNotBlank();
   }

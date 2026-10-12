@@ -7,6 +7,7 @@ import de.basisdatensatz.obds.v2.ADTGEKID.MengePatient.Patient;
 import de.basisdatensatz.obds.v2.ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung;
 import de.basisdatensatz.obds.v2.SeitenlokalisationTyp;
 import de.basisdatensatz.obds.v3.TumorzuordnungTyp;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -140,6 +141,167 @@ class MeldungMapperTest {
       assertThrows(
           UnmappableItemException.class, () -> mapper.map(mitTumorzuordnungsElement, patient));
       assertThrows(UnmappableItemException.class, () -> mapper.map(nurMitDiagnose, patient));
+    }
+  }
+
+  private static Patient patientMitId() {
+    var stammdaten = new Patient.PatientenStammdaten();
+    stammdaten.setPatientID("P1");
+    var patient = new Patient();
+    patient.setPatientenStammdaten(stammdaten);
+    return patient;
+  }
+
+  private static Meldung meldungMitTumorzuordnung(String meldeanlass) {
+    var tumorzuordnung = new Meldung.Tumorzuordnung();
+    tumorzuordnung.setTumorID("T1");
+    tumorzuordnung.setPrimaertumorICDCode("C17.1");
+    tumorzuordnung.setPrimaertumorICDVersion("10 2021 GM");
+    tumorzuordnung.setDiagnosedatum("10.06.2024");
+
+    var meldung = new Meldung();
+    meldung.setMeldungID("M1");
+    meldung.setMelderID("MELDER");
+    meldung.setMeldeanlass(meldeanlass);
+    meldung.setMeldebegruendung("I");
+    meldung.setTumorzuordnung(tumorzuordnung);
+    return meldung;
+  }
+
+  private static Meldung.MengeVerlauf.Verlauf verlauf(
+      String id, String untersuchungsdatum, String gesamtbeurteilung, boolean mitTod) {
+    var verlauf = new Meldung.MengeVerlauf.Verlauf();
+    verlauf.setVerlaufID(id);
+    verlauf.setUntersuchungsdatumVerlauf(untersuchungsdatum);
+    verlauf.setGesamtbeurteilungTumorstatus(gesamtbeurteilung);
+    verlauf.setAnmerkung("Anmerkung " + id);
+    if (mitTod) {
+      var tod = new Meldung.MengeVerlauf.Verlauf.Tod();
+      tod.setSterbedatum("16.10.2024");
+      tod.setTodTumorbedingt(de.basisdatensatz.obds.v2.JNUTyp.J);
+      verlauf.setTod(tod);
+    }
+    return verlauf;
+  }
+
+  private List<de.basisdatensatz.obds.v3.OBDS.MengePatient.Patient.MengeMeldung.Meldung>
+      mappeVerlauf(String meldeanlass, Meldung.MengeVerlauf.Verlauf... verlaeufe) {
+    var meldung = meldungMitTumorzuordnung(meldeanlass);
+    var mengeVerlauf = new Meldung.MengeVerlauf();
+    mengeVerlauf.getVerlauf().addAll(List.of(verlaeufe));
+    meldung.setMengeVerlauf(mengeVerlauf);
+    return mapper.map(meldung, patientMitId());
+  }
+
+  @Nested
+  class VerlaufMitTodTest {
+
+    @Test
+    void shouldMapVerlaufWithTodAsVerlaufAndTod() {
+      var result = mappeVerlauf("statusaenderung", verlauf("V1", "14.10.2024", "P", true));
+
+      assertThat(result)
+          .extracting(m -> m.getMeldungID())
+          .containsExactlyInAnyOrder("M1_V1", "M1__D");
+      var verlauf = result.stream().filter(m -> m.getVerlauf() != null).findFirst().orElseThrow();
+      assertThat(verlauf.getVerlauf().getGesamtbeurteilungTumorstatus()).isEqualTo("P");
+      assertThat(verlauf.getVerlauf().getUntersuchungsdatumVerlauf().toXMLFormat())
+          .startsWith("2024-10-14");
+      var tod = result.stream().filter(m -> m.getTod() != null).findFirst().orElseThrow();
+      assertThat(tod.getTod().getSterbedatum().toXMLFormat()).startsWith("2024-10-16");
+    }
+
+    @Test
+    void shouldAttachAnmerkungOfVerlaufWithTodToTodOnly() {
+      var result = mappeVerlauf("statusaenderung", verlauf("V1", "14.10.2024", "P", true));
+
+      assertThat(
+              result.stream()
+                  .filter(m -> m.getTod() != null)
+                  .findFirst()
+                  .orElseThrow()
+                  .getAnmerkung())
+          .isEqualTo("Anmerkung V1");
+      assertThat(
+              result.stream()
+                  .filter(m -> m.getVerlauf() != null)
+                  .findFirst()
+                  .orElseThrow()
+                  .getAnmerkung())
+          .isNull();
+    }
+
+    @Test
+    void shouldAttachAnmerkungOfVerlaufWithoutTodToVerlauf() {
+      var result = mappeVerlauf("statusaenderung", verlauf("V1", "14.10.2024", "P", false));
+
+      assertThat(result)
+          .singleElement()
+          .satisfies(m -> assertThat(m.getAnmerkung()).isEqualTo("Anmerkung V1"));
+    }
+
+    @Test
+    void shouldOnlyMapTodIfThereIsNoFurtherData() {
+      var nurTod = verlauf("V1", null, null, true);
+      nurTod.setAnmerkung(null);
+
+      var result = mappeVerlauf("tod", nurTod);
+
+      assertThat(result).singleElement().satisfies(m -> assertThat(m.getTod()).isNotNull());
+    }
+
+    @Test
+    void shouldOnlyMapTodIfTheTumorstatusIsIncomplete() {
+      // das Datum fehlt, das in oBDS v3 für den Verlauf benötigt wird
+      var result = mappeVerlauf("tod", verlauf("V1", null, "P", true));
+
+      assertThat(result).singleElement().satisfies(m -> assertThat(m.getTod()).isNotNull());
+    }
+
+    @Test
+    void shouldUseStatusmeldungForMeldeanlassTod() {
+      var result =
+          mappeVerlauf(
+              "tod",
+              verlauf("V1", "14.10.2024", "P", true),
+              verlauf("V2", "13.10.2024", "K", false));
+
+      assertThat(result.stream().filter(m -> m.getVerlauf() != null))
+          .hasSize(2)
+          .allSatisfy(
+              m ->
+                  assertThat(m.getVerlauf().getMeldeanlass())
+                      .isEqualTo(
+                          de.basisdatensatz.obds.v3.VerlaufTyp.Meldeanlass.fromValue(
+                              "statusmeldung")));
+    }
+
+    @Test
+    void shouldOnlyMapTodIfMeldeanlassIsNotAvailableForVerlauf() {
+      var result = mappeVerlauf("behandlungsende", verlauf("V1", "14.10.2024", "P", true));
+
+      assertThat(result).singleElement().satisfies(m -> assertThat(m.getTod()).isNotNull());
+    }
+  }
+
+  @Nested
+  class ZusatzitemTest {
+
+    @Test
+    void shouldNotFailForZusatzitemWithoutArt() {
+      var meldung = meldungMitTumorzuordnung("histologie_zytologie");
+      var diagnose = new Meldung.Diagnose();
+      diagnose.setDiagnosesicherung("7");
+      meldung.setDiagnose(diagnose);
+      var zusatzitem = new Meldung.MengeZusatzitem.Zusatzitem();
+      zusatzitem.setWert("Wert ohne Art");
+      var mengeZusatzitem = new Meldung.MengeZusatzitem();
+      mengeZusatzitem.getZusatzitem().add(zusatzitem);
+      meldung.setMengeZusatzitem(mengeZusatzitem);
+
+      var result = mapper.map(meldung, patientMitId());
+
+      assertThat(result).singleElement().satisfies(m -> assertThat(m.getPathologie()).isNotNull());
     }
   }
 }

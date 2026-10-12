@@ -61,6 +61,7 @@ class AbsenderMapper {
 
     var absender = new AbsenderTyp();
     absender.setAbsenderID(source.getAbsenderID());
+    absender.setInstallationsID(source.getInstallationsID());
     absender.setAnschrift(source.getAbsenderAnschrift());
     absender.setAnsprechpartner(source.getAbsenderAnsprechpartner());
     absender.setBezeichnung(source.getAbsenderBezeichnung());

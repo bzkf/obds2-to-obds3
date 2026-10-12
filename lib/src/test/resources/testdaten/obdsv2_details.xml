@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ADT_GEKID xmlns="http://www.gekid.de/namespace" Schema_Version="2.2.3">
+  <Absender Absender_ID="TEST" Software_ID="ONKOSTAR" Installations_ID="2011">
+    <Absender_Bezeichnung>TEST</Absender_Bezeichnung>
+    <Absender_Anschrift>Musterstraße 1, 012345 Musterhausen</Absender_Anschrift>
+  </Absender>
+  <Menge_Patient>
+    <Patient>
+      <Patienten_Stammdaten Patient_ID="20001234">
+        <KrankenversichertenNr>E123456789</KrankenversichertenNr>
+        <KrankenkassenNr>103456789</KrankenkassenNr>
+        <Patienten_Nachname>Tester</Patienten_Nachname>
+        <Patienten_Vornamen>Patrick</Patienten_Vornamen>
+        <Patienten_Geschlecht>M</Patienten_Geschlecht>
+        <Patienten_Geburtsdatum>01.01.1980</Patienten_Geburtsdatum>
+        <Menge_Adresse>
+          <Adresse>
+            <Patienten_Strasse>Testweg</Patienten_Strasse>
+            <Patienten_Hausnummer>1</Patienten_Hausnummer>
+            <Patienten_Land>DE</Patienten_Land>
+            <Patienten_PLZ>01234</Patienten_PLZ>
+            <Patienten_Ort>Musterhausen</Patienten_Ort>
+          </Adresse>
+        </Menge_Adresse>
+      </Patienten_Stammdaten>
+      <Menge_Meldung>
+        <Meldung Meldung_ID="DET1" Melder_ID="TEST">
+          <Meldedatum>20.07.2024</Meldedatum>
+          <Meldebegruendung>I</Meldebegruendung>
+          <Meldeanlass>behandlungsende</Meldeanlass>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD_Code>C17.1</Primaertumor_ICD_Code>
+            <Primaertumor_ICD_Version>10 2015 GM</Primaertumor_ICD_Version>
+            <Diagnosedatum>10.06.2024</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <Menge_OP>
+            <OP OP_ID="OP1">
+              <OP_Intention>K</OP_Intention>
+              <OP_Datum>01.07.2024</OP_Datum>
+              <Menge_OPS>
+                <OP_OPS>5-455.01</OP_OPS>
+              </Menge_OPS>
+              <OP_OPS_Version>2024</OP_OPS_Version>
+              <Menge_Komplikation>
+                <OP_Komplikation>N</OP_Komplikation>
+              </Menge_Komplikation>
+              <Anmerkung>OP-Anmerkung</Anmerkung>
+            </OP>
+          </Menge_OP>
+          <Menge_ST>
+            <ST ST_ID="ST1">
+              <ST_Intention>K</ST_Intention>
+              <ST_Stellung_OP>A</ST_Stellung_OP>
+              <Menge_Bestrahlung>
+                <Bestrahlung>
+                  <ST_Beginn_Datum>02.07.2024</ST_Beginn_Datum>
+                  <ST_Applikationsart>MPRRT</ST_Applikationsart>
+                  <ST_Gesamtdosis>
+                    <Dosis>29.6</Dosis>
+                    <Einheit>GBq</Einheit>
+                  </ST_Gesamtdosis>
+                  <ST_Einzeldosis>
+                    <Dosis>7.4</Dosis>
+                    <Einheit>GBq</Einheit>
+                  </ST_Einzeldosis>
+                </Bestrahlung>
+                <Bestrahlung>
+                  <ST_Zielgebiet>1.</ST_Zielgebiet>
+                  <ST_Seite_Zielgebiet>L</ST_Seite_Zielgebiet>
+                  <ST_Beginn_Datum>05.07.2024</ST_Beginn_Datum>
+                  <ST_Applikationsart>P</ST_Applikationsart>
+                  <ST_Gesamtdosis>
+                    <Dosis>50</Dosis>
+                    <Einheit>Gy</Einheit>
+                  </ST_Gesamtdosis>
+                  <!-- GBq ist für eine perkutane Bestrahlung in oBDS v3 nicht erlaubt -->
+                  <ST_Einzeldosis>
+                    <Dosis>2</Dosis>
+                    <Einheit>GBq</Einheit>
+                  </ST_Einzeldosis>
+                </Bestrahlung>
+              </Menge_Bestrahlung>
+              <Menge_Nebenwirkung>
+                <ST_Nebenwirkung>
+                  <Nebenwirkung_Grad>K</Nebenwirkung_Grad>
+                </ST_Nebenwirkung>
+              </Menge_Nebenwirkung>
+              <Anmerkung>ST-Anmerkung</Anmerkung>
+            </ST>
+          </Menge_ST>
+          <Menge_SYST>
+            <SYST SYST_ID="SYST1">
+              <SYST_Intention>K</SYST_Intention>
+              <SYST_Stellung_OP>A</SYST_Stellung_OP>
+              <Menge_Therapieart>
+                <SYST_Therapieart>SO</SYST_Therapieart>
+              </Menge_Therapieart>
+              <SYST_Therapieart_Anmerkung>Antikörper-Wirkstoff-Konjugat</SYST_Therapieart_Anmerkung>
+              <SYST_Beginn_Datum>15.07.2024</SYST_Beginn_Datum>
+              <Menge_Nebenwirkung>
+                <SYST_Nebenwirkung>
+                  <Nebenwirkung_Grad>K</Nebenwirkung_Grad>
+                </SYST_Nebenwirkung>
+              </Menge_Nebenwirkung>
+              <Anmerkung>SYST-Anmerkung</Anmerkung>
+            </SYST>
+          </Menge_SYST>
+          <Anmerkung>Meldungsanmerkung</Anmerkung>
+        </Meldung>
+        <Meldung Meldung_ID="DET2" Melder_ID="TEST">
+          <Meldedatum>16.10.2024</Meldedatum>
+          <Meldebegruendung>I</Meldebegruendung>
+          <Meldeanlass>tod</Meldeanlass>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD_Code>C17.1</Primaertumor_ICD_Code>
+            <Primaertumor_ICD_Version>10 2015 GM</Primaertumor_ICD_Version>
+            <Diagnosedatum>10.06.2024</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <Menge_Verlauf>
+            <!-- Ein Verlauf mit Tod und Angaben zum Tumorstatus -->
+            <Verlauf Verlauf_ID="V1">
+              <Untersuchungsdatum_Verlauf>14.10.2024</Untersuchungsdatum_Verlauf>
+              <Gesamtbeurteilung_Tumorstatus>P</Gesamtbeurteilung_Tumorstatus>
+              <Verlauf_Lokaler_Tumorstatus>P</Verlauf_Lokaler_Tumorstatus>
+              <Tod>
+                <Sterbedatum>16.10.2024</Sterbedatum>
+                <Tod_tumorbedingt>J</Tod_tumorbedingt>
+              </Tod>
+              <Anmerkung>Verlaufs-Anmerkung bei Tod</Anmerkung>
+            </Verlauf>
+          </Menge_Verlauf>
+        </Meldung>
+        <Meldung Meldung_ID="DET3" Melder_ID="TEST">
+          <Meldedatum>11.06.2024</Meldedatum>
+          <Meldebegruendung>I</Meldebegruendung>
+          <Meldeanlass>diagnose</Meldeanlass>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD_Code>C17.1</Primaertumor_ICD_Code>
+            <Primaertumor_ICD_Version>10 2015 GM</Primaertumor_ICD_Version>
+            <Diagnosedatum>10.06.2024</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <Diagnose>
+            <Primaertumor_Topographie_ICD_O_Freitext>Dünndarm</Primaertumor_Topographie_ICD_O_Freitext>
+            <Diagnosesicherung>7</Diagnosesicherung>
+            <Allgemeiner_Leistungszustand>0</Allgemeiner_Leistungszustand>
+            <Anmerkung>Diagnose-Anmerkung</Anmerkung>
+          </Diagnose>
+          <Anmerkung>Meldungsanmerkung</Anmerkung>
+        </Meldung>
+      </Menge_Meldung>
+    </Patient>
+  </Menge_Patient>
+  <Menge_Melder>
+    <Melder Melder_ID="TEST">
+      <Melder_IKNR>103456789</Melder_IKNR>
+      <Meldende_Stelle>TEST</Meldende_Stelle>
+    </Melder>
+  </Menge_Melder>
+</ADT_GEKID>

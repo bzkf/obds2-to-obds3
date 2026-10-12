@@ -65,6 +65,10 @@ public class SystemtherapieMapper {
       MapperUtils.ifNotNull(
           source.getModulAllgemein(), m -> systTyp.setModulAllgemein(ModulMapper.map(m)));
 
+      if (source.getResidualstatus() != null) {
+        LOG.warn("Residualstatus is not available for a SYST in oBDS v3 and is not mapped.");
+      }
+
       result.add(systTyp);
       MDC.remove("SYSTID");
     }
