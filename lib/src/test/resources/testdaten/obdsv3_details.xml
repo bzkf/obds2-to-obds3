@@ -148,7 +148,7 @@ OP-Anmerkung</Anmerkung>
             <Untersuchungsdatum_Verlauf>2024-10-14</Untersuchungsdatum_Verlauf>
             <Gesamtbeurteilung_Tumorstatus>P</Gesamtbeurteilung_Tumorstatus>
             <Verlauf_Lokaler_Tumorstatus>P</Verlauf_Lokaler_Tumorstatus>
-            <Allgemeiner_Leistungszustand>U</Allgemeiner_Leistungszustand>
+            <Allgemeiner_Leistungszustand>3</Allgemeiner_Leistungszustand>
           </Verlauf>
         </Meldung>
         <Meldung Meldung_ID="DET2__D" Melder_ID="TEST">

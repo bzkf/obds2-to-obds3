@@ -119,11 +119,12 @@
             <Seitenlokalisation>T</Seitenlokalisation>
           </Tumorzuordnung>
           <Menge_Verlauf>
-            <!-- Ein Verlauf mit Tod und Angaben zum Tumorstatus -->
+            <!-- Ein Verlauf mit Tod, Gesamtbeurteilung und Leistungszustand: auch als Verlauf übernommen -->
             <Verlauf Verlauf_ID="V1">
               <Untersuchungsdatum_Verlauf>14.10.2024</Untersuchungsdatum_Verlauf>
               <Gesamtbeurteilung_Tumorstatus>P</Gesamtbeurteilung_Tumorstatus>
               <Verlauf_Lokaler_Tumorstatus>P</Verlauf_Lokaler_Tumorstatus>
+              <Allgemeiner_Leistungszustand>3</Allgemeiner_Leistungszustand>
               <Tod>
                 <Sterbedatum>16.10.2024</Sterbedatum>
                 <Tod_tumorbedingt>J</Tod_tumorbedingt>

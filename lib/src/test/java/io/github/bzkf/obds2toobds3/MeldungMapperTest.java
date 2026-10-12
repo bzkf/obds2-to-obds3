@@ -11,6 +11,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class MeldungMapperTest {
 
@@ -169,6 +171,17 @@ class MeldungMapperTest {
   }
 
   private static Meldung.MengeVerlauf.Verlauf verlauf(
+      String id,
+      String untersuchungsdatum,
+      String gesamtbeurteilung,
+      String leistungszustand,
+      boolean mitTod) {
+    var verlauf = verlauf(id, untersuchungsdatum, gesamtbeurteilung, mitTod);
+    verlauf.setAllgemeinerLeistungszustand(leistungszustand);
+    return verlauf;
+  }
+
+  private static Meldung.MengeVerlauf.Verlauf verlauf(
       String id, String untersuchungsdatum, String gesamtbeurteilung, boolean mitTod) {
     var verlauf = new Meldung.MengeVerlauf.Verlauf();
     verlauf.setVerlaufID(id);
@@ -193,35 +206,56 @@ class MeldungMapperTest {
     return mapper.map(meldung, patientMitId());
   }
 
+  /**
+   * Ein Verlauf mit Tod wird zusätzlich als Verlauf gemappt, wenn in oBDS v2 die Gesamtbeurteilung
+   * oder der allgemeine Leistungszustand angegeben ist. Ein Datum wird nicht benötigt. Übernommen
+   * wird nur, was angegeben ist: Platzhalter ("X" und "U") gibt es für diese Verläufe nicht, sie
+   * würden z.B. zu einem ECOG-Wert "unbekannt" führen.
+   */
   @Nested
   class VerlaufMitTodTest {
 
+    private de.basisdatensatz.obds.v3.OBDS.MengePatient.Patient.MengeMeldung.Meldung tod(
+        List<de.basisdatensatz.obds.v3.OBDS.MengePatient.Patient.MengeMeldung.Meldung> result) {
+      return result.stream().filter(m -> m.getTod() != null).findFirst().orElseThrow();
+    }
+
+    private void assertOnlyTod(
+        List<de.basisdatensatz.obds.v3.OBDS.MengePatient.Patient.MengeMeldung.Meldung> result) {
+      assertThat(result).singleElement().satisfies(m -> assertThat(m.getTod()).isNotNull());
+    }
+
     @Test
     void shouldMapVerlaufWithTodAsVerlaufAndTod() {
-      var result = mappeVerlauf("statusaenderung", verlauf("V1", "14.10.2024", "P", true));
+      var result = mappeVerlauf("statusaenderung", verlauf("V1", "14.10.2024", "P", "2", true));
 
       assertThat(result)
           .extracting(m -> m.getMeldungID())
           .containsExactlyInAnyOrder("M1_V1", "M1__D");
       var verlauf = result.stream().filter(m -> m.getVerlauf() != null).findFirst().orElseThrow();
       assertThat(verlauf.getVerlauf().getGesamtbeurteilungTumorstatus()).isEqualTo("P");
+      assertThat(verlauf.getVerlauf().getAllgemeinerLeistungszustand())
+          .isEqualTo(de.basisdatensatz.obds.v3.AllgemeinerLeistungszustand.ECOG_2);
       assertThat(verlauf.getVerlauf().getUntersuchungsdatumVerlauf().toXMLFormat())
           .startsWith("2024-10-14");
-      var tod = result.stream().filter(m -> m.getTod() != null).findFirst().orElseThrow();
-      assertThat(tod.getTod().getSterbedatum().toXMLFormat()).startsWith("2024-10-16");
+      assertThat(tod(result).getTod().getSterbedatum().toXMLFormat()).startsWith("2024-10-16");
+    }
+
+    @Test
+    void shouldNotRequireUntersuchungsdatum() {
+      var result = mappeVerlauf("statusaenderung", verlauf("V1", null, "P", "2", true));
+
+      assertThat(result).hasSize(2);
+      var verlauf = result.stream().filter(m -> m.getVerlauf() != null).findFirst().orElseThrow();
+      assertThat(verlauf.getVerlauf().getUntersuchungsdatumVerlauf()).isNull();
+      assertThat(verlauf.getVerlauf().getGesamtbeurteilungTumorstatus()).isEqualTo("P");
     }
 
     @Test
     void shouldAttachAnmerkungOfVerlaufWithTodToTodOnly() {
-      var result = mappeVerlauf("statusaenderung", verlauf("V1", "14.10.2024", "P", true));
+      var result = mappeVerlauf("statusaenderung", verlauf("V1", "14.10.2024", "P", "2", true));
 
-      assertThat(
-              result.stream()
-                  .filter(m -> m.getTod() != null)
-                  .findFirst()
-                  .orElseThrow()
-                  .getAnmerkung())
-          .isEqualTo("Anmerkung V1");
+      assertThat(tod(result).getAnmerkung()).isEqualTo("Anmerkung V1");
       assertThat(
               result.stream()
                   .filter(m -> m.getVerlauf() != null)
@@ -245,17 +279,40 @@ class MeldungMapperTest {
       var nurTod = verlauf("V1", null, null, true);
       nurTod.setAnmerkung(null);
 
-      var result = mappeVerlauf("tod", nurTod);
-
-      assertThat(result).singleElement().satisfies(m -> assertThat(m.getTod()).isNotNull());
+      assertOnlyTod(mappeVerlauf("tod", nurTod));
     }
 
     @Test
-    void shouldOnlyMapTodIfTheTumorstatusIsIncomplete() {
-      // das Datum fehlt, das in oBDS v3 für den Verlauf benötigt wird
-      var result = mappeVerlauf("tod", verlauf("V1", null, "P", true));
+    void shouldMapVerlaufWithTodWithoutPlaceholderIfOnlyTheGesamtbeurteilungIsGiven() {
+      var result = mappeVerlauf("tod", verlauf("V1", "14.10.2024", "P", null, true));
 
-      assertThat(result).singleElement().satisfies(m -> assertThat(m.getTod()).isNotNull());
+      assertThat(result).hasSize(2);
+      var verlauf = result.stream().filter(m -> m.getVerlauf() != null).findFirst().orElseThrow();
+      assertThat(verlauf.getVerlauf().getGesamtbeurteilungTumorstatus()).isEqualTo("P");
+      // kein "U" als Platzhalter
+      assertThat(verlauf.getVerlauf().getAllgemeinerLeistungszustand()).isNull();
+    }
+
+    @Test
+    void shouldMapVerlaufWithTodWithoutPlaceholderIfOnlyTheLeistungszustandIsGiven() {
+      var result = mappeVerlauf("tod", verlauf("V1", "14.10.2024", null, "2", true));
+
+      assertThat(result).hasSize(2);
+      var verlauf = result.stream().filter(m -> m.getVerlauf() != null).findFirst().orElseThrow();
+      assertThat(verlauf.getVerlauf().getAllgemeinerLeistungszustand())
+          .isEqualTo(de.basisdatensatz.obds.v3.AllgemeinerLeistungszustand.ECOG_2);
+      // weder "X" noch "U" als Platzhalter
+      assertThat(verlauf.getVerlauf().getGesamtbeurteilungTumorstatus()).isNull();
+    }
+
+    @Test
+    void shouldOnlyMapTodIfNeitherGesamtbeurteilungNorLeistungszustandIsGiven() {
+      var nurDatum = verlauf("V1", "14.10.2024", null, null, true);
+      assertOnlyTod(mappeVerlauf("tod", nurDatum));
+
+      var nurLokalerStatus = verlauf("V1", null, null, null, true);
+      nurLokalerStatus.setVerlaufLokalerTumorstatus("K");
+      assertOnlyTod(mappeVerlauf("tod", nurLokalerStatus));
     }
 
     @Test
@@ -263,7 +320,7 @@ class MeldungMapperTest {
       var result =
           mappeVerlauf(
               "tod",
-              verlauf("V1", "14.10.2024", "P", true),
+              verlauf("V1", "14.10.2024", "P", "2", true),
               verlauf("V2", "13.10.2024", "K", false));
 
       assertThat(result.stream().filter(m -> m.getVerlauf() != null))
@@ -278,9 +335,60 @@ class MeldungMapperTest {
 
     @Test
     void shouldOnlyMapTodIfMeldeanlassIsNotAvailableForVerlauf() {
-      var result = mappeVerlauf("behandlungsende", verlauf("V1", "14.10.2024", "P", true));
+      assertOnlyTod(mappeVerlauf("behandlungsende", verlauf("V1", "14.10.2024", "P", "2", true)));
+    }
+  }
 
-      assertThat(result).singleElement().satisfies(m -> assertThat(m.getTod()).isNotNull());
+  /** Verläufe ohne Tod sind ein eigener Status, die in oBDS v3 verpflichtenden Angaben fehlen. */
+  @Nested
+  class LeistungszustandTest {
+
+    private de.basisdatensatz.obds.v3.AllgemeinerLeistungszustand mappeLeistungszustand(
+        String leistungszustand) {
+      var result =
+          mappeVerlauf(
+              "statusaenderung", verlauf("V1", "14.10.2024", "P", leistungszustand, false));
+      assertThat(result).singleElement();
+      return result.get(0).getVerlauf().getAllgemeinerLeistungszustand();
+    }
+
+    @Test
+    void shouldUseUnknownIfLeistungszustandIsMissingInVerlaufWithoutTod() {
+      assertThat(mappeLeistungszustand(null))
+          .isEqualTo(de.basisdatensatz.obds.v3.AllgemeinerLeistungszustand.U);
+    }
+
+    @Test
+    void shouldKeepLeistungszustandFromObdsV2() {
+      assertThat(mappeLeistungszustand("3"))
+          .isEqualTo(de.basisdatensatz.obds.v3.AllgemeinerLeistungszustand.ECOG_3);
+    }
+  }
+
+  /**
+   * Die Gesamtbeurteilung ist in oBDS v3 verpflichtend. "U" bedeutet "Beurteilung unmöglich" und
+   * ist damit eine inhaltliche Aussage, fehlt die Angabe, ist sie "X" (fehlende Angaben).
+   */
+  @Nested
+  class GesamtbeurteilungTumorstatusTest {
+
+    private String mappeGesamtbeurteilung(String gesamtbeurteilung) {
+      var result =
+          mappeVerlauf("statusaenderung", verlauf("V1", "14.10.2024", gesamtbeurteilung, false));
+      assertThat(result).singleElement();
+      return result.get(0).getVerlauf().getGesamtbeurteilungTumorstatus();
+    }
+
+    @Test
+    void shouldUseFehlendeAngabeIfGesamtbeurteilungIsMissing() {
+      assertThat(mappeGesamtbeurteilung(null)).isEqualTo("X").isNotEqualTo("U");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"V", "T", "K", "P", "D", "B", "R", "U", "X"})
+    void shouldKeepGesamtbeurteilungFromObdsV2(String gesamtbeurteilung) {
+      // insbesondere "U" (Beurteilung unmöglich) wird nicht verändert
+      assertThat(mappeGesamtbeurteilung(gesamtbeurteilung)).isEqualTo(gesamtbeurteilung);
     }
   }
 

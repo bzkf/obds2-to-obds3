@@ -69,6 +69,7 @@ class ObdsMapperTest {
       "testdaten/obdsv2_st_1.xml,testdaten/obdsv3_st_1.xml",
       "testdaten/obdsv2_syst_1.xml,testdaten/obdsv3_syst_1.xml",
       "testdaten/obdsv2_verlauf_histologie.xml,testdaten/obdsv3_verlauf_histologie.xml",
+      "testdaten/obdsv2_verlauf_ohne-gesamtbeurteilung.xml,testdaten/obdsv3_verlauf_ohne-gesamtbeurteilung.xml",
       "testdaten/obdsv2_missing-meldung-id.xml,testdaten/obdsv3_missing-meldung-id.xml",
       "testdaten/obdsv2_module.xml,testdaten/obdsv3_module.xml",
       "testdaten/obdsv2_module_patho.xml,testdaten/obdsv3_module_patho.xml",
@@ -227,6 +228,7 @@ class ObdsMapperTest {
       "testdaten/obdsv2_st_strahlenart.xml,testdaten/obdsv3_st_strahlenart.xml",
       "testdaten/obdsv2_tod.xml,testdaten/obdsv3_tod.xml",
       "testdaten/obdsv2_missing_meldungen.xml,testdaten/obdsv3_missing_meldungen.xml",
+      "testdaten/obdsv2_verlauf_tod-teilweise.xml,testdaten/obdsv3_verlauf_tod-teilweise.xml",
     })
     void shouldMapObdsFileWithoutSchemaValidation(String obdsV2File, String obdsV3File)
         throws Exception {

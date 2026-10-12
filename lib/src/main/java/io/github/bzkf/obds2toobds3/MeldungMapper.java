@@ -544,8 +544,8 @@ class MeldungMapper {
     var result = new ArrayList<Meldung>();
     for (var verlauf : mengeVerlauf.getVerlauf()) {
       // Der Tod eines Verlaufs wird in getMeldungTod gemappt. Der Verlauf selbst wird nur
-      // gemappt, wenn er ohne Tod ist oder zusätzlich die in oBDS v3 benötigten Angaben zum
-      // Tumorstatus enthält.
+      // gemappt, wenn er ohne Tod ist oder zusätzlich Gesamtbeurteilung oder allgemeinen
+      // Leistungszustand enthält.
       if (verlauf.getTod() != null && !hasVerlaufDataBesidesTod(verlauf)) {
         continue;
       }
@@ -569,24 +569,26 @@ class MeldungMapper {
   }
 
   /**
-   * Prüft, ob ein Verlauf mit Tod auch die Angaben zum Tumorstatus enthält, die in oBDS v3 für
-   * einen Verlauf benötigt werden. Enthält er andere Angaben, die nicht übernommen werden können,
-   * wird dies protokolliert.
+   * Prüft, ob ein Verlauf mit Tod auch als Verlauf übernommen wird. Das ist der Fall, wenn in oBDS
+   * v2 die Gesamtbeurteilung oder der allgemeine Leistungszustand angegeben ist. Übernommen wird,
+   * was angegeben ist: Anders als bei einem Verlauf ohne Tod wird eine fehlende Angabe nicht mit
+   * "X" bzw. "U" ersetzt, da ein Verlauf sonst z.B. zu einem ECOG-Wert "unbekannt" führen würde,
+   * der so nie angegeben wurde. Ein Untersuchungsdatum wird nicht benötigt. Enthält der Verlauf
+   * andere Angaben, aber keine dieser beiden, werden sie nicht übernommen und dies wird
+   * protokolliert.
    */
   private static boolean hasVerlaufDataBesidesTod(
       ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeVerlauf.Verlauf verlauf) {
-    if (verlauf.getUntersuchungsdatumVerlauf() != null
-        && verlauf.getGesamtbeurteilungTumorstatus() != null) {
+    if (verlauf.getGesamtbeurteilungTumorstatus() != null
+        || verlauf.getAllgemeinerLeistungszustand() != null) {
       return true;
     }
 
     var containsOtherData =
         verlauf.getUntersuchungsdatumVerlauf() != null
-            || verlauf.getGesamtbeurteilungTumorstatus() != null
             || verlauf.getVerlaufLokalerTumorstatus() != null
             || verlauf.getVerlaufTumorstatusLymphknoten() != null
             || verlauf.getVerlaufTumorstatusFernmetastasen() != null
-            || verlauf.getAllgemeinerLeistungszustand() != null
             || verlauf.getHistologie() != null
             || verlauf.getTNM() != null
             || verlauf.getMengeFM() != null
@@ -596,9 +598,8 @@ class MeldungMapper {
             || verlauf.getModulMalignesMelanom() != null;
     if (containsOtherData) {
       LOG.warn(
-          "Verlauf={} contains a Tod and further data, but not both Untersuchungsdatum_Verlauf "
-              + "and Gesamtbeurteilung_Tumorstatus which are required for a Verlauf in oBDS v3. "
-              + "Only the Tod is mapped.",
+          "Verlauf={} contains a Tod and further data, but neither Gesamtbeurteilung_Tumorstatus "
+              + "nor Allgemeiner_Leistungszustand. Only the Tod is mapped.",
           verlauf.getVerlaufID());
     }
     return false;
@@ -647,11 +648,11 @@ class MeldungMapper {
     }
 
     // AllgemeinerLeistungszustand ist nicht verpflicchtend oBDS v2. In v3 schon.
-    // Default: "U" verwenden
+    // Default: "U" verwenden, außer bei einem Verlauf mit Tod: dort nur, was angegeben ist.
     if (verlauf.getAllgemeinerLeistungszustand() != null) {
       mappedVerlauf.setAllgemeinerLeistungszustand(
           AllgemeinerLeistungszustand.fromValue(verlauf.getAllgemeinerLeistungszustand()));
-    } else {
+    } else if (verlauf.getTod() == null) {
       mappedVerlauf.setAllgemeinerLeistungszustand(AllgemeinerLeistungszustand.U);
     }
 
@@ -675,7 +676,19 @@ class MeldungMapper {
     // Nur verwendet, wenn Datumstring mappbar
     MapperUtils.mapDateString(verlauf.getUntersuchungsdatumVerlauf())
         .ifPresent(datum -> mappedVerlauf.setUntersuchungsdatumVerlauf(datum.getValue()));
-    mappedVerlauf.setGesamtbeurteilungTumorstatus(verlauf.getGesamtbeurteilungTumorstatus());
+
+    // In oBDS v3 verpflichtend, in oBDS v2 optional. Fehlt die Angabe, wird "X" (fehlende Angaben)
+    // verwendet und nicht "U", denn das bedeutet "Beurteilung unmöglich" - eine Aussage über den
+    // Tumorstatus, die so nie getroffen wurde. Bei einem Verlauf mit Tod wird nur übernommen, was
+    // angegeben ist.
+    if (verlauf.getGesamtbeurteilungTumorstatus() != null) {
+      mappedVerlauf.setGesamtbeurteilungTumorstatus(verlauf.getGesamtbeurteilungTumorstatus());
+    } else if (verlauf.getTod() == null) {
+      LOG.debug(
+          "Gesamtbeurteilung_Tumorstatus is unset for Verlauf={}. Defaulting to 'X'.",
+          verlauf.getVerlaufID());
+      mappedVerlauf.setGesamtbeurteilungTumorstatus("X");
+    }
 
     // Fernmetastasen
     if (verlauf.getMengeFM() != null) {
