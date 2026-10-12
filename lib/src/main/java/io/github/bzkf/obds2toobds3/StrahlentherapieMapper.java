@@ -74,6 +74,10 @@ public class StrahlentherapieMapper {
         var mappedNebenwirkungen =
             NebenwirkungMapper.map(source.getMengeNebenwirkung().getSTNebenwirkung(), "ST");
         stTyp.setNebenwirkungen(mappedNebenwirkungen);
+      } else {
+        // In oBDS v3 verpflichtend, in oBDS v2 optional
+        LOG.debug("Menge_Nebenwirkung is unset in ST but required in v3. Defaulting to 'U'.");
+        stTyp.setNebenwirkungen(NebenwirkungMapper.unbekannt());
       }
 
       MapperUtils.ifNotNull(

@@ -60,6 +60,10 @@ public class SystemtherapieMapper {
         var mappedNebenwirkungen =
             NebenwirkungMapper.map(source.getMengeNebenwirkung().getSYSTNebenwirkung(), "SYST");
         systTyp.setNebenwirkungen(mappedNebenwirkungen);
+      } else {
+        // In oBDS v3 verpflichtend, in oBDS v2 optional
+        LOG.debug("Menge_Nebenwirkung is unset in SYST but required in v3. Defaulting to 'U'.");
+        systTyp.setNebenwirkungen(NebenwirkungMapper.unbekannt());
       }
 
       MapperUtils.ifNotNull(

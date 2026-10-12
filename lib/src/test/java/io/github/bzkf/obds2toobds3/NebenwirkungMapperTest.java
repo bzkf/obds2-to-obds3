@@ -73,4 +73,48 @@ class NebenwirkungMapperTest {
               assertThat(nebenwirkung.getVersion()).isEqualTo("Sonstige");
             });
   }
+
+  @Test
+  void shouldProvideUnknownGradForTherapiesWithoutNebenwirkungen() {
+    var actual = NebenwirkungMapper.unbekannt();
+
+    assertThat(actual.getGradMaximal2OderUnbekannt()).isEqualTo("U");
+    assertThat(actual.getMengeNebenwirkung()).isNull();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"ST", "SYST"})
+  void shouldFallBackToUnknownGradIfNoNebenwirkungHasAGrad(String therapie) {
+    var actual =
+        NebenwirkungMapper.map(
+            List.of(nebenwirkung(null, "10055599", "4.03"), nebenwirkung(" ", "Übelkeit", null)),
+            therapie);
+
+    assertThat(actual.getGradMaximal2OderUnbekannt()).isEqualTo("U");
+    assertThat(actual.getMengeNebenwirkung()).isNull();
+  }
+
+  @Test
+  void shouldOnlyMapNebenwirkungenWithAGradIfThereAreSome() {
+    var actual =
+        NebenwirkungMapper.map(
+            List.of(
+                nebenwirkung("3", "Übelkeit", "5.0"),
+                nebenwirkung(null, "Müdigkeit", "5.0"),
+                nebenwirkung("4", "Anämie", "5.0")),
+            "SYST");
+
+    assertThat(actual.getGradMaximal2OderUnbekannt()).isNull();
+    assertThat(actual.getMengeNebenwirkung().getNebenwirkung())
+        .extracting(n -> n.getArt().getBezeichnung())
+        .containsExactly("Übelkeit", "Anämie");
+  }
+
+  @Test
+  void shouldFallBackToUnknownGradForNoNebenwirkungen() {
+    var actual = NebenwirkungMapper.map(List.of(), "ST");
+
+    assertThat(actual.getGradMaximal2OderUnbekannt()).isEqualTo("U");
+    assertThat(actual.getMengeNebenwirkung()).isNull();
+  }
 }

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ADT_GEKID xmlns="http://www.gekid.de/namespace" Schema_Version="2.2.3">
+  <Absender Absender_ID="TEST" Software_ID="ONKOSTAR" Installations_ID="2011">
+    <Absender_Bezeichnung>TEST</Absender_Bezeichnung>
+    <Absender_Anschrift>Musterstraße 1, 012345 Musterhausen</Absender_Anschrift>
+  </Absender>
+  <Menge_Patient>
+    <Patient>
+      <Patienten_Stammdaten Patient_ID="20001234">
+        <KrankenversichertenNr>E123456789</KrankenversichertenNr>
+        <KrankenkassenNr>103456789</KrankenkassenNr>
+        <Patienten_Nachname>Tester</Patienten_Nachname>
+        <Patienten_Vornamen>Patrick</Patienten_Vornamen>
+        <Patienten_Geschlecht>M</Patienten_Geschlecht>
+        <Patienten_Geburtsdatum>01.01.1980</Patienten_Geburtsdatum>
+        <Menge_Adresse>
+          <Adresse>
+            <Patienten_Strasse>Testweg</Patienten_Strasse>
+            <Patienten_Hausnummer>1</Patienten_Hausnummer>
+            <Patienten_Land>DE</Patienten_Land>
+            <Patienten_PLZ>01234</Patienten_PLZ>
+            <Patienten_Ort>Musterhausen</Patienten_Ort>
+          </Adresse>
+        </Menge_Adresse>
+      </Patienten_Stammdaten>
+      <Menge_Meldung>
+        <Meldung Meldung_ID="NW1" Melder_ID="TEST">
+          <Meldedatum>20.07.2024</Meldedatum>
+          <Meldebegruendung>I</Meldebegruendung>
+          <Meldeanlass>behandlungsende</Meldeanlass>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD_Code>C17.1</Primaertumor_ICD_Code>
+            <Primaertumor_ICD_Version>10 2015 GM</Primaertumor_ICD_Version>
+            <Diagnosedatum>10.06.2024</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <Menge_ST>
+            <!-- Ohne Angaben zu Nebenwirkungen, in oBDS v3 werden sie benötigt -->
+            <ST ST_ID="ST1">
+              <ST_Intention>K</ST_Intention>
+              <ST_Stellung_OP>A</ST_Stellung_OP>
+            </ST>
+          </Menge_ST>
+          <Menge_SYST>
+            <!-- Ohne Angaben zu Nebenwirkungen, in oBDS v3 werden sie benötigt -->
+            <SYST SYST_ID="SYST1">
+              <SYST_Intention>K</SYST_Intention>
+              <SYST_Stellung_OP>A</SYST_Stellung_OP>
+              <Menge_Therapieart>
+                <SYST_Therapieart>CH</SYST_Therapieart>
+              </Menge_Therapieart>
+              <SYST_Beginn_Datum>15.07.2024</SYST_Beginn_Datum>
+            </SYST>
+            <!-- Eine Nebenwirkung ohne Grad, in oBDS v3 ist der Grad der Nebenwirkung verpflichtend -->
+            <SYST SYST_ID="SYST2">
+              <SYST_Intention>K</SYST_Intention>
+              <SYST_Stellung_OP>A</SYST_Stellung_OP>
+              <Menge_Therapieart>
+                <SYST_Therapieart>CH</SYST_Therapieart>
+              </Menge_Therapieart>
+              <SYST_Beginn_Datum>15.07.2024</SYST_Beginn_Datum>
+              <Menge_Nebenwirkung>
+                <SYST_Nebenwirkung>
+                  <Nebenwirkung_Art>10055599</Nebenwirkung_Art>
+                  <Nebenwirkung_Version>4.03</Nebenwirkung_Version>
+                </SYST_Nebenwirkung>
+              </Menge_Nebenwirkung>
+            </SYST>
+            <!-- Eine Nebenwirkung mit und eine ohne Grad: nur die mit Grad kann übernommen werden -->
+            <SYST SYST_ID="SYST3">
+              <SYST_Intention>K</SYST_Intention>
+              <SYST_Stellung_OP>A</SYST_Stellung_OP>
+              <Menge_Therapieart>
+                <SYST_Therapieart>CH</SYST_Therapieart>
+              </Menge_Therapieart>
+              <SYST_Beginn_Datum>15.07.2024</SYST_Beginn_Datum>
+              <Menge_Nebenwirkung>
+                <SYST_Nebenwirkung>
+                  <Nebenwirkung_Grad>3</Nebenwirkung_Grad>
+                  <Nebenwirkung_Art>Übelkeit</Nebenwirkung_Art>
+                  <Nebenwirkung_Version>5.0</Nebenwirkung_Version>
+                </SYST_Nebenwirkung>
+                <SYST_Nebenwirkung>
+                  <Nebenwirkung_Art>Müdigkeit</Nebenwirkung_Art>
+                  <Nebenwirkung_Version>5.0</Nebenwirkung_Version>
+                </SYST_Nebenwirkung>
+              </Menge_Nebenwirkung>
+            </SYST>
+          </Menge_SYST>
+        </Meldung>
+      </Menge_Meldung>
+    </Patient>
+  </Menge_Patient>
+  <Menge_Melder>
+    <Melder Melder_ID="TEST">
+      <Melder_IKNR>103456789</Melder_IKNR>
+      <Meldende_Stelle>TEST</Meldende_Stelle>
+    </Melder>
+  </Menge_Melder>
+</ADT_GEKID>

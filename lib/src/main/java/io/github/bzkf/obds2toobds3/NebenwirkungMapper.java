@@ -19,6 +19,16 @@ class NebenwirkungMapper {
   private NebenwirkungMapper() {}
 
   /**
+   * In oBDS v3 sind die Nebenwirkungen einer ST und SYST verpflichtend, in oBDS v2 hingegen
+   * optional. Fehlen sie, ist der maximale Grad unbekannt.
+   */
+  static NebenwirkungTyp unbekannt() {
+    var result = new NebenwirkungTyp();
+    result.setGradMaximal2OderUnbekannt("U");
+    return result;
+  }
+
+  /**
    * @param nebenwirkungenV2 Die oBDS v2 Nebenwirkungen der Therapie
    * @param therapie Kürzel der Therapie ("ST" oder "SYST"), wird nur für Log-Meldungen verwendet
    */
@@ -30,6 +40,17 @@ class NebenwirkungMapper {
 
     for (var nebenwirkungV2 : nebenwirkungenV2) {
       var nebenwirkungV3 = new Nebenwirkung();
+
+      // In oBDS v3 ist der Grad einer einzelnen Nebenwirkung verpflichtend (3, 4 oder 5). Ohne
+      // Grad kann sie nicht übernommen werden; der Grad der Nebenwirkungen ist dann unbekannt.
+      if (nebenwirkungV2.getNebenwirkungGrad() == null
+          || nebenwirkungV2.getNebenwirkungGrad().isBlank()) {
+        LOG.warn(
+            "Nebenwirkung_Grad of a {} Nebenwirkung is unset but required in v3. The Nebenwirkung (Art={}) is not mapped.",
+            therapie,
+            nebenwirkungV2.getNebenwirkungArt());
+        continue;
+      }
 
       if (nebenwirkungV2.getNebenwirkungGrad() != null
           && (nebenwirkungV2.getNebenwirkungGrad().equals("K")
@@ -69,6 +90,11 @@ class NebenwirkungMapper {
       nebenwirkungV3.setGrad(nebenwirkungV2.getNebenwirkungGrad());
 
       mengeNebenwirkungV3.getNebenwirkung().add(nebenwirkungV3);
+    }
+
+    // Es konnte keine Nebenwirkung übernommen werden, da keine einen Grad hat
+    if (mengeNebenwirkungV3.getNebenwirkung().isEmpty()) {
+      return unbekannt();
     }
 
     result.setMengeNebenwirkung(mengeNebenwirkungV3);

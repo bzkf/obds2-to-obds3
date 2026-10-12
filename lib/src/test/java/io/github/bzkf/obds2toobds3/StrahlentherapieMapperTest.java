@@ -81,4 +81,17 @@ class StrahlentherapieMapperTest {
     var sonstige = mapBestrahlung("S", null, dosis("1", "GBq"));
     assertThat(sonstige.getApplikationsart().getSonstige().getEinzeldosis()).isNull();
   }
+
+  @Test
+  void shouldDefaultNebenwirkungenToUnknownIfUnset() {
+    var st = new MengeST.ST();
+    st.setSTID("1");
+    var mengeST = new MengeST();
+    mengeST.getST().add(st);
+
+    var actual = StrahlentherapieMapper.map(mengeST, "behandlungsende");
+
+    assertThat(actual).singleElement();
+    assertThat(actual.get(0).getNebenwirkungen().getGradMaximal2OderUnbekannt()).isEqualTo("U");
+  }
 }

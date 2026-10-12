@@ -57,6 +57,9 @@
                 </Applikationsart>
               </Bestrahlung>
             </Menge_Bestrahlung>
+            <Nebenwirkungen>
+              <Grad_maximal2_oder_unbekannt>U</Grad_maximal2_oder_unbekannt>
+            </Nebenwirkungen>
           </ST>
         </Meldung>
         <Meldung Meldung_ID="ST0001238_45900" Melder_ID="ST">
