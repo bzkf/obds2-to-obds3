@@ -1,8 +1,5 @@
 package io.github.bzkf.obds2toobds3;
 
-import de.basisdatensatz.obds.v2.ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeSYST.SYST.MengeNebenwirkung;
-import de.basisdatensatz.obds.v3.NebenwirkungTyp;
-import de.basisdatensatz.obds.v3.NebenwirkungTyp.MengeNebenwirkung.Nebenwirkung;
 import de.basisdatensatz.obds.v3.SYSTTyp;
 import de.basisdatensatz.obds.v3.SYSTTyp.EndeGrund;
 import de.basisdatensatz.obds.v3.SYSTTyp.Meldeanlass;
@@ -60,8 +57,20 @@ public class SystemtherapieMapper {
       }
 
       if (source.getMengeNebenwirkung() != null) {
-        var mappedNebenwirkungen = mapNebenwirkungen(source.getMengeNebenwirkung());
+        var mappedNebenwirkungen =
+            NebenwirkungMapper.map(source.getMengeNebenwirkung().getSYSTNebenwirkung(), "SYST");
         systTyp.setNebenwirkungen(mappedNebenwirkungen);
+      } else {
+        // In oBDS v3 verpflichtend, in oBDS v2 optional
+        LOG.debug("Menge_Nebenwirkung is unset in SYST but required in v3. Defaulting to 'U'.");
+        systTyp.setNebenwirkungen(NebenwirkungMapper.unbekannt());
+      }
+
+      MapperUtils.ifNotNull(
+          source.getModulAllgemein(), m -> systTyp.setModulAllgemein(ModulMapper.map(m)));
+
+      if (source.getResidualstatus() != null) {
+        LOG.warn("Residualstatus is not available for a SYST in oBDS v3 and is not mapped.");
       }
 
       result.add(systTyp);
@@ -123,57 +132,5 @@ public class SystemtherapieMapper {
       case "IMZS" -> Therapieart.IZ;
       default -> throw new IllegalStateException("Unsupported Therapieart: " + code);
     };
-  }
-
-  // painfully similar to the one in "StrahlentherapieMapper", but the types are
-  // unfortunately different.
-  private static NebenwirkungTyp mapNebenwirkungen(MengeNebenwirkung mengeNebenwirkung) {
-    var mengeNebenwirkungV3 = new de.basisdatensatz.obds.v3.NebenwirkungTyp.MengeNebenwirkung();
-
-    var result = new NebenwirkungTyp();
-
-    for (var nebenwirkungV2 : mengeNebenwirkung.getSYSTNebenwirkung()) {
-      var nebenwirkungV3 = new Nebenwirkung();
-
-      if (nebenwirkungV2.getNebenwirkungGrad() != null
-          && (nebenwirkungV2.getNebenwirkungGrad().equals("K")
-              || nebenwirkungV2.getNebenwirkungGrad().equals("U"))) {
-        if (mengeNebenwirkung.getSYSTNebenwirkung().size() > 1) {
-          LOG.warn(
-              "SYST has multiple Nebenwirkungen, but should only contain one if set to 'K' or 'U'.");
-        }
-
-        if (nebenwirkungV2.getNebenwirkungArt() != null) {
-          LOG.warn(
-              "Nebenwirkung Grad is 'K' or 'U', but the Art is set. This information is lost after the mapping.");
-        }
-
-        result.setGradMaximal2OderUnbekannt(nebenwirkungV2.getNebenwirkungGrad());
-        return result;
-      }
-
-      var art = new NebenwirkungTyp.MengeNebenwirkung.Nebenwirkung.Art();
-      if (nebenwirkungV2.getNebenwirkungArt() != null) {
-        art.setBezeichnung(nebenwirkungV2.getNebenwirkungArt());
-      } else {
-        LOG.warn("Nebenwirkung_Art is unset. Defaulting to 'Sonstige'.");
-        art.setBezeichnung("Sonstige");
-      }
-
-      nebenwirkungV3.setArt(art);
-
-      if (nebenwirkungV2.getNebenwirkungVersion() != null) {
-        nebenwirkungV3.setVersion(nebenwirkungV2.getNebenwirkungVersion());
-      } else {
-        nebenwirkungV3.setVersion("Sonstige");
-      }
-
-      nebenwirkungV3.setGrad(nebenwirkungV2.getNebenwirkungGrad());
-
-      mengeNebenwirkungV3.getNebenwirkung().add(nebenwirkungV3);
-    }
-
-    result.setMengeNebenwirkung(mengeNebenwirkungV3);
-    return result;
   }
 }

@@ -64,6 +64,16 @@ test {
     useJUnitPlatform()
 }
 
+// AbsenderMapper reads the Software_Version from the Implementation-Version manifest entry
+jar {
+    manifest {
+        attributes(
+            'Implementation-Title': 'obds2-to-obds3',
+            'Implementation-Version': project.version
+        )
+    }
+}
+
 tasks.register('xsd2java') {
 
     doLast {

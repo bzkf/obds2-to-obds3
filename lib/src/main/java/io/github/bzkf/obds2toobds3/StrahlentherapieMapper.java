@@ -1,9 +1,7 @@
 package io.github.bzkf.obds2toobds3;
 
 import de.basisdatensatz.obds.v2.ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeST.ST.MengeBestrahlung.Bestrahlung;
-import de.basisdatensatz.obds.v2.ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeST.ST.MengeNebenwirkung;
-import de.basisdatensatz.obds.v3.NebenwirkungTyp;
-import de.basisdatensatz.obds.v3.NebenwirkungTyp.MengeNebenwirkung.Nebenwirkung;
+import de.basisdatensatz.obds.v3.AktivitaetsTyp;
 import de.basisdatensatz.obds.v3.STTyp;
 import de.basisdatensatz.obds.v3.STTyp.Meldeanlass;
 import de.basisdatensatz.obds.v3.STTyp.MengeBestrahlung;
@@ -73,8 +71,20 @@ public class StrahlentherapieMapper {
       }
 
       if (source.getMengeNebenwirkung() != null) {
-        var mappedNebenwirkungen = mapNebenwirkungen(source.getMengeNebenwirkung());
+        var mappedNebenwirkungen =
+            NebenwirkungMapper.map(source.getMengeNebenwirkung().getSTNebenwirkung(), "ST");
         stTyp.setNebenwirkungen(mappedNebenwirkungen);
+      } else {
+        // In oBDS v3 verpflichtend, in oBDS v2 optional
+        LOG.debug("Menge_Nebenwirkung is unset in ST but required in v3. Defaulting to 'U'.");
+        stTyp.setNebenwirkungen(NebenwirkungMapper.unbekannt());
+      }
+
+      MapperUtils.ifNotNull(
+          source.getModulAllgemein(), m -> stTyp.setModulAllgemein(ModulMapper.map(m)));
+
+      if (source.getResidualstatus() != null) {
+        LOG.warn("Residualstatus is not available for a ST in oBDS v3 and is not mapped.");
       }
 
       result.add(stTyp);
@@ -84,54 +94,53 @@ public class StrahlentherapieMapper {
     return result;
   }
 
-  private static NebenwirkungTyp mapNebenwirkungen(MengeNebenwirkung mengeNebenwirkung) {
-    var mengeNebenwirkungV3 = new de.basisdatensatz.obds.v3.NebenwirkungTyp.MengeNebenwirkung();
-
-    var result = new NebenwirkungTyp();
-
-    for (var nebenwirkungV2 : mengeNebenwirkung.getSTNebenwirkung()) {
-      var nebenwirkungV3 = new Nebenwirkung();
-
-      if (nebenwirkungV2.getNebenwirkungGrad() != null
-          && (nebenwirkungV2.getNebenwirkungGrad().equals("K")
-              || nebenwirkungV2.getNebenwirkungGrad().equals("U"))) {
-        if (mengeNebenwirkung.getSTNebenwirkung().size() > 1) {
-          LOG.warn(
-              "ST has multiple Nebenwirkungen, but should only contain one if set to 'K' or 'U'.");
-        }
-
-        if (nebenwirkungV2.getNebenwirkungArt() != null) {
-          LOG.warn(
-              "Nebenwirkung Grad is 'K' or 'U', but the Art is set. This information is lost after the mapping.");
-        }
-
-        result.setGradMaximal2OderUnbekannt(nebenwirkungV2.getNebenwirkungGrad());
-        return result;
-      }
-
-      var art = new NebenwirkungTyp.MengeNebenwirkung.Nebenwirkung.Art();
-      if (nebenwirkungV2.getNebenwirkungArt() != null) {
-        art.setBezeichnung(nebenwirkungV2.getNebenwirkungArt());
-      } else {
-        LOG.warn("Nebenwirkung_Art is unset. Defaulting to 'Sonstige'.");
-        art.setBezeichnung("Sonstige");
-      }
-
-      nebenwirkungV3.setArt(art);
-
-      if (nebenwirkungV2.getNebenwirkungVersion() != null) {
-        nebenwirkungV3.setVersion(nebenwirkungV2.getNebenwirkungVersion());
-      } else {
-        LOG.warn("Nebenwirkung_Version is unset. Defaulting to 'Sonstige'.");
-        nebenwirkungV3.setVersion("Sonstige");
-      }
-
-      nebenwirkungV3.setGrad(nebenwirkungV2.getNebenwirkungGrad());
-
-      mengeNebenwirkungV3.getNebenwirkung().add(nebenwirkungV3);
+  /**
+   * In oBDS v2 sind die Einheiten 'Gy' und 'GBq' möglich. In oBDS v3 ist die Strahlendosis immer in
+   * 'Gy', die Aktivität einer metabolischen Therapie hingegen in 'GBq', 'MBq' oder 'kBq'.
+   *
+   * @return die Dosis oder <code>null</code>, wenn sie nicht vorhanden oder nicht in 'Gy' ist
+   */
+  private static StrahlendosisTyp mapStrahlendosis(
+      de.basisdatensatz.obds.v2.StrahlendosisTyp source, String feld) {
+    if (null == source) {
+      return null;
     }
 
-    result.setMengeNebenwirkung(mengeNebenwirkungV3);
+    if (!"Gy".equals(source.getEinheit())) {
+      LOG.warn(
+          "{} has the unit {} but only 'Gy' is allowed for this Applikationsart in oBDS v3. The dose is not mapped.",
+          feld,
+          source.getEinheit());
+      return null;
+    }
+
+    var result = new StrahlendosisTyp();
+    result.setDosis(source.getDosis());
+    result.setEinheit(source.getEinheit());
+    return result;
+  }
+
+  /**
+   * @return die Aktivität oder <code>null</code>, wenn sie nicht vorhanden oder nicht in einer
+   *     Einheit der Aktivität angegeben ist
+   */
+  private static AktivitaetsTyp mapAktivitaet(
+      de.basisdatensatz.obds.v2.StrahlendosisTyp source, String feld) {
+    if (null == source) {
+      return null;
+    }
+
+    if (!List.of("GBq", "MBq", "kBq").contains(source.getEinheit())) {
+      LOG.warn(
+          "{} has the unit {} but only GBq, MBq or kBq are allowed for a metabolic therapy in oBDS v3. The dose is not mapped.",
+          feld,
+          source.getEinheit());
+      return null;
+    }
+
+    var result = new AktivitaetsTyp();
+    result.setDosis(source.getDosis());
+    result.setEinheit(source.getEinheit());
     return result;
   }
 
@@ -142,20 +151,6 @@ public class StrahlentherapieMapper {
 
     if (bestrahlung.getSTSeiteZielgebiet() != null) {
       seiteZielgebiet = SeiteZielgebietTyp.fromValue(bestrahlung.getSTSeiteZielgebiet());
-    }
-
-    StrahlendosisTyp einzeldosis = null;
-    if (bestrahlung.getSTEinzeldosis() != null) {
-      einzeldosis = new StrahlendosisTyp();
-      einzeldosis.setDosis(bestrahlung.getSTEinzeldosis().getDosis());
-      einzeldosis.setEinheit(bestrahlung.getSTEinzeldosis().getEinheit());
-    }
-
-    StrahlendosisTyp gesamtdosis = null;
-    if (bestrahlung.getSTGesamtdosis() != null) {
-      gesamtdosis = new StrahlendosisTyp();
-      gesamtdosis.setDosis(bestrahlung.getSTGesamtdosis().getDosis());
-      gesamtdosis.setEinheit(bestrahlung.getSTGesamtdosis().getEinheit());
     }
 
     var applikationsart = bestrahlung.getSTApplikationsart();
@@ -184,8 +179,8 @@ public class StrahlentherapieMapper {
         perkutan.setSeiteZielgebiet(SeiteZielgebietTyp.U);
       }
 
-      perkutan.setEinzeldosis(einzeldosis);
-      perkutan.setGesamtdosis(gesamtdosis);
+      perkutan.setEinzeldosis(mapStrahlendosis(bestrahlung.getSTEinzeldosis(), "ST_Einzeldosis"));
+      perkutan.setGesamtdosis(mapStrahlendosis(bestrahlung.getSTGesamtdosis(), "ST_Gesamtdosis"));
       switch (applikationsart) {
         case "P":
           break;
@@ -221,8 +216,8 @@ public class StrahlentherapieMapper {
         kontakt.setSeiteZielgebiet(SeiteZielgebietTyp.U);
       }
 
-      kontakt.setEinzeldosis(einzeldosis);
-      kontakt.setGesamtdosis(gesamtdosis);
+      kontakt.setEinzeldosis(mapStrahlendosis(bestrahlung.getSTEinzeldosis(), "ST_Einzeldosis"));
+      kontakt.setGesamtdosis(mapStrahlendosis(bestrahlung.getSTGesamtdosis(), "ST_Gesamtdosis"));
       kontakt.setInterstitiellEndokavitaer("K");
 
       switch (applikationsart) {
@@ -265,8 +260,8 @@ public class StrahlentherapieMapper {
         kontakt.setSeiteZielgebiet(SeiteZielgebietTyp.U);
       }
 
-      kontakt.setEinzeldosis(einzeldosis);
-      kontakt.setGesamtdosis(gesamtdosis);
+      kontakt.setEinzeldosis(mapStrahlendosis(bestrahlung.getSTEinzeldosis(), "ST_Einzeldosis"));
+      kontakt.setGesamtdosis(mapStrahlendosis(bestrahlung.getSTGesamtdosis(), "ST_Gesamtdosis"));
       kontakt.setInterstitiellEndokavitaer("I");
       switch (applikationsart) {
         case "I":
@@ -303,6 +298,10 @@ public class StrahlentherapieMapper {
         metabolisch.setSeiteZielgebiet(seiteZielgebiet);
       }
 
+      // Bei der metabolischen Therapie wird die Dosis in oBDS v3 als Aktivität angegeben (GBq)
+      metabolisch.setEinzeldosis(mapAktivitaet(bestrahlung.getSTEinzeldosis(), "ST_Einzeldosis"));
+      metabolisch.setGesamtdosis(mapAktivitaet(bestrahlung.getSTGesamtdosis(), "ST_Gesamtdosis"));
+
       switch (applikationsart) {
         case "M":
           metabolisch.setMetabolischTyp("M");
@@ -333,8 +332,8 @@ public class StrahlentherapieMapper {
         sonstige.setSeiteZielgebiet(seiteZielgebiet);
       }
 
-      sonstige.setEinzeldosis(einzeldosis);
-      sonstige.setGesamtdosis(gesamtdosis);
+      sonstige.setEinzeldosis(mapStrahlendosis(bestrahlung.getSTEinzeldosis(), "ST_Einzeldosis"));
+      sonstige.setGesamtdosis(mapStrahlendosis(bestrahlung.getSTGesamtdosis(), "ST_Gesamtdosis"));
       result.setSonstige(sonstige);
       return Optional.of(result);
     }

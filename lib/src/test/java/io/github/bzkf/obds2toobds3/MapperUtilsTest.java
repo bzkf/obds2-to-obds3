@@ -130,4 +130,31 @@ class MapperUtilsTest {
         Arguments.of(JNUTyp.N, JNU.N),
         Arguments.of(JNUTyp.U, JNU.U));
   }
+
+  @Test
+  void shouldJoinAnmerkungenIgnoringBlankOnes() {
+    assertThat(MapperUtils.joinAnmerkungen("Meldung", null, "  ", " OP ")).isEqualTo("Meldung\nOP");
+    assertThat(MapperUtils.joinAnmerkungen("Nur eine")).isEqualTo("Nur eine");
+  }
+
+  @Test
+  void shouldReturnNullIfThereIsNoAnmerkung() {
+    assertThat(MapperUtils.joinAnmerkungen()).isNull();
+    assertThat(MapperUtils.joinAnmerkungen(null, "", "   ")).isNull();
+  }
+
+  @Test
+  void shouldTruncateTooLongAnmerkungenToTheLengthAllowedInObdsV3() {
+    var actual = MapperUtils.joinAnmerkungen("a".repeat(1500), "b".repeat(1500));
+
+    assertThat(actual).hasSize(MapperUtils.MAX_ANMERKUNG_LENGTH).startsWith("aaa").endsWith("b");
+  }
+
+  @Test
+  void shouldNotSplitSurrogatePairsWhenTruncatingAnmerkungen() {
+    // U+1F600 besteht aus zwei chars, das zweite würde bei 2000 Zeichen abgeschnitten
+    var actual = MapperUtils.joinAnmerkungen("a".repeat(1999) + "\uD83D\uDE00");
+
+    assertThat(actual).hasSize(1999);
+  }
 }

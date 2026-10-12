@@ -47,8 +47,10 @@ class PatientMapper {
       throw new IllegalArgumentException("Source cannot be null");
     }
 
-    var stammdaten = source.getPatientenStammdaten();
-    assert stammdaten != null;
+    var stammdaten =
+        MapperUtils.requireMappable(
+            source.getPatientenStammdaten(),
+            "ADT_GEKID element 'Patienten_Stammdaten' must not be null - required for oBDS v3");
 
     var patient = new OBDS.MengePatient.Patient();
     // PatientenID in oBDS v2 in Stammdaten
@@ -161,9 +163,15 @@ class PatientMapper {
     }
 
     // Geburtsdatum
-    var geburtsdatum = MapperUtils.mapDateString(stammdaten.getPatientenGeburtsdatum());
-    assert geburtsdatum.isPresent();
-    mappedStammdaten.setGeburtsdatum(geburtsdatum.get());
+    // Der Wert wird bewusst nicht in die Exception übernommen, da es sich um Patientendaten
+    // handelt.
+    var geburtsdatum =
+        MapperUtils.mapDateString(stammdaten.getPatientenGeburtsdatum())
+            .orElseThrow(
+                () ->
+                    new UnmappableItemException(
+                        "ADT_GEKID element 'Patienten_Geburtsdatum' is missing or not a valid date - required for oBDS v3"));
+    mappedStammdaten.setGeburtsdatum(geburtsdatum);
 
     // Geschlecht
     // oBDS v2 kennt noch "S", oBDS v3 jedoch "D" und "X" - daher "U" für unbekannt

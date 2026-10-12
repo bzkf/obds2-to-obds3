@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <oBDS xmlns="http://www.basisdatensatz.de/oBDS/XML" Schema_Version="3.0.4">
-  <Absender Absender_ID="TEST" Software_ID="obds2-to-obds3" Software_Version="0.1.0">
+  <Absender Absender_ID="TEST" Software_ID="obds2-to-obds3" Software_Version="unknown" Installations_ID="2.9.8">
     <Bezeichnung>TEST</Bezeichnung>
     <Anschrift>TEST 2, 00 TEST</Anschrift>
   </Absender>

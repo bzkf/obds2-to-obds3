@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<oBDS xmlns="http://www.basisdatensatz.de/oBDS/XML" Schema_Version="3.0.4">
+  <Absender Absender_ID="TEST" Software_ID="obds2-to-obds3" Software_Version="unknown" Installations_ID="2011">
+    <Bezeichnung>TEST</Bezeichnung>
+    <Anschrift>Musterstraße 1, 012345 Musterhausen</Anschrift>
+  </Absender>
+  <Meldedatum>2024-06-11</Meldedatum>
+  <Menge_Patient>
+    <Patient Patient_ID="20001234">
+      <Patienten_Stammdaten>
+        <Versichertendaten_GKV>
+          <IKNR>103456789</IKNR>
+          <GKV_Versichertennummer>E123456789</GKV_Versichertennummer>
+        </Versichertendaten_GKV>
+        <Nachname>Tester</Nachname>
+        <Vornamen>Patrick</Vornamen>
+        <Geschlecht>M</Geschlecht>
+        <Geburtsdatum Datumsgenauigkeit="E">1980-01-01</Geburtsdatum>
+        <Adresse>
+          <Strasse>Testweg</Strasse>
+          <Hausnummer>1</Hausnummer>
+          <Land>DE</Land>
+          <PLZ>01234</PLZ>
+          <Ort>Musterhausen</Ort>
+        </Adresse>
+      </Patienten_Stammdaten>
+      <Menge_Meldung>
+        <Meldung Meldung_ID="MOD1" Melder_ID="TEST">
+          <Meldebegruendung>I</Meldebegruendung>
+          <Eigene_Leistung>J</Eigene_Leistung>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD>
+              <Code>C17.1</Code>
+              <Version>10 2015 GM</Version>
+            </Primaertumor_ICD>
+            <Diagnosedatum Datumsgenauigkeit="E">2024-06-10</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <Diagnose>
+            <Diagnosesicherung>7</Diagnosesicherung>
+            <Allgemeiner_Leistungszustand>0</Allgemeiner_Leistungszustand>
+            <Modul_Allgemein>
+              <Sozialdienstkontakt>
+                <Datum>2024-06-12</Datum>
+              </Sozialdienstkontakt>
+              <Studienteilnahme>
+                <NU>N</NU>
+              </Studienteilnahme>
+            </Modul_Allgemein>
+            <Modul_Mamma>
+              <Praetherapeutischer_Menopausenstatus>3</Praetherapeutischer_Menopausenstatus>
+              <HormonrezeptorStatus_Oestrogen>P</HormonrezeptorStatus_Oestrogen>
+              <HormonrezeptorStatus_Progesteron>N</HormonrezeptorStatus_Progesteron>
+              <Her2neuStatus>U</Her2neuStatus>
+              <PraeopDrahtmarkierung>M</PraeopDrahtmarkierung>
+              <IntraopPraeparatkontrolle>S</IntraopPraeparatkontrolle>
+              <TumorgroesseInvasiv>25</TumorgroesseInvasiv>
+              <TumorgroesseDCIS>U</TumorgroesseDCIS>
+            </Modul_Mamma>
+            <Modul_Darm>
+              <RektumAbstandAnokutanlinie>8</RektumAbstandAnokutanlinie>
+              <RektumAbstandAboralerResektionsrand>12</RektumAbstandAboralerResektionsrand>
+              <RektumAbstandCircResektionsebene>3</RektumAbstandCircResektionsebene>
+              <RektumQualitaetTME>2</RektumQualitaetTME>
+              <RektumMRTDuennschichtAngabemesorektaleFaszie>D</RektumMRTDuennschichtAngabemesorektaleFaszie>
+              <ArtEingriff>E</ArtEingriff>
+              <RektumAnzeichnungStomaposition>K</RektumAnzeichnungStomaposition>
+              <GradRektumAnastomoseninsuffizienz>B</GradRektumAnastomoseninsuffizienz>
+              <ASA>2</ASA>
+              <RASMutation>W</RASMutation>
+            </Modul_Darm>
+            <Modul_Prostata>
+              <GleasonScore>
+                <GradPrimaer>3</GradPrimaer>
+                <GradSekundaer>4</GradSekundaer>
+                <ScoreErgebnis>7b</ScoreErgebnis>
+              </GleasonScore>
+              <AnlassGleasonScore>S</AnlassGleasonScore>
+            </Modul_Prostata>
+            <Modul_Malignes_Melanom>
+              <Sicherheitsabstand_Primaertumor>10</Sicherheitsabstand_Primaertumor>
+              <Tumordicke>1.4</Tumordicke>
+              <LDH>250</LDH>
+              <Ulzeration>J</Ulzeration>
+            </Modul_Malignes_Melanom>
+          </Diagnose>
+        </Meldung>
+        <Meldung Meldung_ID="MOD2_SYST1" Melder_ID="TEST">
+          <Meldebegruendung>I</Meldebegruendung>
+          <Eigene_Leistung>J</Eigene_Leistung>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD>
+              <Code>C17.1</Code>
+              <Version>10 2015 GM</Version>
+            </Primaertumor_ICD>
+            <Diagnosedatum Datumsgenauigkeit="E">2024-06-10</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <SYST SYST_ID="SYST1">
+            <Meldeanlass>behandlungsende</Meldeanlass>
+            <Intention>K</Intention>
+            <Stellung_OP>A</Stellung_OP>
+            <Therapieart>CH</Therapieart>
+            <Beginn Datumsgenauigkeit="E">2024-07-15</Beginn>
+            <Nebenwirkungen>
+              <Grad_maximal2_oder_unbekannt>K</Grad_maximal2_oder_unbekannt>
+            </Nebenwirkungen>
+            <Modul_Allgemein>
+              <Studienteilnahme>
+                <NU>U</NU>
+              </Studienteilnahme>
+            </Modul_Allgemein>
+          </SYST>
+        </Meldung>
+        <Meldung Meldung_ID="MOD2_ST1" Melder_ID="TEST">
+          <Meldebegruendung>I</Meldebegruendung>
+          <Eigene_Leistung>J</Eigene_Leistung>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD>
+              <Code>C17.1</Code>
+              <Version>10 2015 GM</Version>
+            </Primaertumor_ICD>
+            <Diagnosedatum Datumsgenauigkeit="E">2024-06-10</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <ST ST_ID="ST1">
+            <Meldeanlass>behandlungsende</Meldeanlass>
+            <Intention>K</Intention>
+            <Stellung_OP>A</Stellung_OP>
+            <Nebenwirkungen>
+              <Grad_maximal2_oder_unbekannt>K</Grad_maximal2_oder_unbekannt>
+            </Nebenwirkungen>
+            <Modul_Allgemein>
+              <Sozialdienstkontakt>
+                <Datum>2024-07-02</Datum>
+              </Sozialdienstkontakt>
+            </Modul_Allgemein>
+          </ST>
+        </Meldung>
+        <Meldung Meldung_ID="MOD2_OP1" Melder_ID="TEST">
+          <Meldebegruendung>I</Meldebegruendung>
+          <Eigene_Leistung>J</Eigene_Leistung>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD>
+              <Code>C17.1</Code>
+              <Version>10 2015 GM</Version>
+            </Primaertumor_ICD>
+            <Diagnosedatum Datumsgenauigkeit="E">2024-06-10</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <OP OP_ID="OP1">
+            <Intention>K</Intention>
+            <Datum>2024-07-01</Datum>
+            <Menge_OPS>
+              <OPS>
+                <Code>5-455.01</Code>
+                <Version>2024</Version>
+              </OPS>
+            </Menge_OPS>
+            <Komplikationen>
+              <Komplikation_nein_oder_unbekannt>N</Komplikation_nein_oder_unbekannt>
+            </Komplikationen>
+            <Modul_Allgemein>
+              <Sozialdienstkontakt>
+                <N>N</N>
+              </Sozialdienstkontakt>
+              <Studienteilnahme>
+                <Datum>2024-06-20</Datum>
+              </Studienteilnahme>
+            </Modul_Allgemein>
+            <Modul_Mamma>
+              <HormonrezeptorStatus_Oestrogen>N</HormonrezeptorStatus_Oestrogen>
+            </Modul_Mamma>
+            <Modul_Darm>
+              <ArtEingriff>N</ArtEingriff>
+              <RASMutation>M</RASMutation>
+            </Modul_Darm>
+            <Modul_Prostata>
+              <AnzahlStanzen>12</AnzahlStanzen>
+              <AnzahlPosStanzen>3</AnzahlPosStanzen>
+              <CaBefallStanze>
+                <Prozentzahl>30</Prozentzahl>
+              </CaBefallStanze>
+              <PSA>6.5</PSA>
+              <KomplPostOP_ClavienDindo>N</KomplPostOP_ClavienDindo>
+            </Modul_Prostata>
+            <Modul_Malignes_Melanom>
+              <Ulzeration>U</Ulzeration>
+            </Modul_Malignes_Melanom>
+          </OP>
+        </Meldung>
+        <Meldung Meldung_ID="MOD3_V1" Melder_ID="TEST">
+          <Meldebegruendung>I</Meldebegruendung>
+          <Eigene_Leistung>J</Eigene_Leistung>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD>
+              <Code>C17.1</Code>
+              <Version>10 2015 GM</Version>
+            </Primaertumor_ICD>
+            <Diagnosedatum Datumsgenauigkeit="E">2024-06-10</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <Verlauf Verlauf_ID="V1">
+            <Meldeanlass>statusaenderung</Meldeanlass>
+            <Untersuchungsdatum_Verlauf>2024-10-14</Untersuchungsdatum_Verlauf>
+            <Gesamtbeurteilung_Tumorstatus>K</Gesamtbeurteilung_Tumorstatus>
+            <Allgemeiner_Leistungszustand>U</Allgemeiner_Leistungszustand>
+            <Modul_Allgemein>
+              <Sozialdienstkontakt>
+                <Datum>2024-10-01</Datum>
+              </Sozialdienstkontakt>
+            </Modul_Allgemein>
+            <Modul_Prostata>
+              <PSA>0.4</PSA>
+              <DatumPSA Datumsgenauigkeit="E">2024-10-10</DatumPSA>
+            </Modul_Prostata>
+            <Modul_Malignes_Melanom>
+              <LDH>180</LDH>
+            </Modul_Malignes_Melanom>
+          </Verlauf>
+        </Meldung>
+      </Menge_Meldung>
+    </Patient>
+  </Menge_Patient>
+  <Menge_Melder>
+    <Melder ID="TEST">
+      <Ident_Nummern>
+        <IKNR>103456789</IKNR>
+      </Ident_Nummern>
+    </Melder>
+  </Menge_Melder>
+</oBDS>

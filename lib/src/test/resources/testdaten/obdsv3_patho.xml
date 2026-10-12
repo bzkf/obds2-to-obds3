@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <oBDS xmlns="http://www.basisdatensatz.de/oBDS/XML" Schema_Version="3.0.4">
-  <Absender Absender_ID="TEST" Software_ID="obds2-to-obds3" Software_Version="0.1.0">
+  <Absender Absender_ID="TEST" Software_ID="obds2-to-obds3" Software_Version="unknown" Installations_ID="2011">
     <Bezeichnung>TEST</Bezeichnung>
     <Anschrift>Musterstraße 1, 012345 Musterhausen</Anschrift>
   </Absender>
@@ -63,6 +63,14 @@
             <Zusatzitem>
               <Art>Histologie_Material_Text</Art>
               <Wert>1 B, 8 OT</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Arzt</Art>
+              <Wert>Test Universität Musterhausen Institut für Pathologie Prof. Dr. C. Tester</Wert>
+            </Zusatzitem>
+            <Zusatzitem>
+              <Art>Einsender_Anschrift</Art>
+              <Wert>Teststraße 1, D 12345 Musterhausen</Wert>
             </Zusatzitem>
             <Zusatzitem>
               <Art>Teilnahme_Forschungsvorhaben</Art>

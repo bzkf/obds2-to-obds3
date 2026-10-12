@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import de.basisdatensatz.obds.v2.ADTGEKID;
 import de.basisdatensatz.obds.v3.SYSTTyp;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -61,5 +62,18 @@ class SystemtherapieMapperTest {
 
     assertThat(actual).hasSize(1);
     assertThat(actual.get(0).getTherapieart()).isEqualTo(SYSTTyp.Therapieart.fromValue(out));
+  }
+
+  @Test
+  void shouldDefaultNebenwirkungenToUnknownIfUnset() {
+    var menge = new ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeSYST();
+    var syst = new ADTGEKID.MengePatient.Patient.MengeMeldung.Meldung.MengeSYST.SYST();
+    syst.setSYSTID("1");
+    menge.getSYST().add(syst);
+
+    var actual = SystemtherapieMapper.map(menge, SYSTTyp.Meldeanlass.BEHANDLUNGSENDE.value());
+
+    assertThat(actual).singleElement();
+    assertThat(actual.get(0).getNebenwirkungen().getGradMaximal2OderUnbekannt()).isEqualTo("U");
   }
 }
