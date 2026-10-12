@@ -29,14 +29,13 @@ import de.basisdatensatz.obds.v3.DatumTagOderMonatGenauTypSchaetzOptional;
 import de.basisdatensatz.obds.v3.DatumTagOderMonatOderJahrOderNichtGenauTyp;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import org.slf4j.Logger;
@@ -45,6 +44,19 @@ import org.slf4j.LoggerFactory;
 class MapperUtils {
 
   private static final Logger LOG = LoggerFactory.getLogger(MapperUtils.class);
+
+  /**
+   * Creates a plain calendar date without time part and without time zone. Unknown (0) month or day
+   * default to 1, the precision is tracked separately in the Datumsgenauigkeit. Avoiding
+   * GregorianCalendar here is intentional: it would use the JVM's default time zone and make the
+   * result depend on where the conversion runs.
+   */
+  static XMLGregorianCalendar newDate(int year, int month, int day)
+      throws DatatypeConfigurationException {
+    return DatatypeFactory.newInstance()
+        .newXMLGregorianCalendarDate(
+            year, Math.max(month, 1), Math.max(day, 1), DatatypeConstants.FIELD_UNDEFINED);
+  }
 
   public static final String OBDS2_DATE_REGEX =
       "(?<day>([0-2]\\d)|(3[01]))\\.(?<month>(0\\d)|(1[0-2]))\\.(?<year>(18|19|20)\\d\\d)";
@@ -69,17 +81,13 @@ class MapperUtils {
 
     var result = new DatumTagOderMonatOderJahrOderNichtGenauTyp();
 
-    var calendar = new GregorianCalendar();
-    calendar.clear();
-
     if ("00.00.0000".equals(date)) {
-      calendar.set(Calendar.YEAR, 1900);
       result.setDatumsgenauigkeit(
           DatumTagOderMonatOderJahrOderNichtGenauTyp
               .DatumsgenauigkeitTagOderMonatOderJahrOderNichtGenau.V);
 
       try {
-        result.setValue(DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
+        result.setValue(newDate(1900, 1, 1));
         return Optional.of(result);
       } catch (DatatypeConfigurationException e) {
         return Optional.empty();
@@ -93,28 +101,24 @@ class MapperUtils {
       var month = Integer.parseInt(matcher.group("month"));
       var year = Integer.parseInt(matcher.group("year"));
 
-      calendar.set(Calendar.YEAR, year);
       result.setDatumsgenauigkeit(
           DatumTagOderMonatOderJahrOderNichtGenauTyp
               .DatumsgenauigkeitTagOderMonatOderJahrOderNichtGenau.M);
 
       if (month > 0) {
-        // Starts with month "0"
-        calendar.set(Calendar.MONTH, month - 1);
         result.setDatumsgenauigkeit(
             DatumTagOderMonatOderJahrOderNichtGenauTyp
                 .DatumsgenauigkeitTagOderMonatOderJahrOderNichtGenau.T);
       }
 
       if (day > 0) {
-        calendar.set(Calendar.DAY_OF_MONTH, day);
         result.setDatumsgenauigkeit(
             DatumTagOderMonatOderJahrOderNichtGenauTyp
                 .DatumsgenauigkeitTagOderMonatOderJahrOderNichtGenau.E);
       }
 
       try {
-        result.setValue(DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
+        result.setValue(newDate(year, month, day));
         return Optional.of(result);
       } catch (DatatypeConfigurationException e) {
         return Optional.empty();
@@ -147,11 +151,6 @@ class MapperUtils {
       var month = Integer.parseInt(matcher.group("month"));
       var year = Integer.parseInt(matcher.group("year"));
 
-      var calendar = new GregorianCalendar();
-      calendar.clear();
-
-      calendar.set(Calendar.YEAR, year);
-
       if (month == 0 && day == 0) {
         // For DatumTagOderMonatGenauTyp, Datumsgenauigkeit is a required field.
         // If both month and day are unknown, our only choice is to set the
@@ -163,18 +162,15 @@ class MapperUtils {
       }
 
       if (month > 0) {
-        // Starts with month "0"
-        calendar.set(Calendar.MONTH, month - 1);
         result.setDatumsgenauigkeit(DatumTagOderMonatGenauTyp.DatumsgenauigkeitTagOderMonatGenau.T);
       }
 
       if (day > 0) {
-        calendar.set(Calendar.DAY_OF_MONTH, day);
         result.setDatumsgenauigkeit(DatumTagOderMonatGenauTyp.DatumsgenauigkeitTagOderMonatGenau.E);
       }
 
       try {
-        result.setValue(DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar));
+        result.setValue(newDate(year, month, day));
         return Optional.of(result);
       } catch (DatatypeConfigurationException e) {
         return Optional.empty();
