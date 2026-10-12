@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ADT_GEKID xmlns="http://www.gekid.de/namespace" Schema_Version="2.2.3">
+  <Absender Absender_ID="TEST" Software_ID="ONKOSTAR" Installations_ID="2011">
+    <Absender_Bezeichnung>TEST</Absender_Bezeichnung>
+    <Absender_Anschrift>Musterstraße 1, 012345 Musterhausen</Absender_Anschrift>
+  </Absender>
+  <Menge_Patient>
+    <Patient>
+      <Patienten_Stammdaten Patient_ID="20001234">
+        <KrankenversichertenNr>E123456789</KrankenversichertenNr>
+        <KrankenkassenNr>103456789</KrankenkassenNr>
+        <Patienten_Nachname>Tester</Patienten_Nachname>
+        <Patienten_Titel />
+        <Patienten_Vornamen>Patrick</Patienten_Vornamen>
+        <Patienten_Geburtsname>Tester</Patienten_Geburtsname>
+        <Menge_Frueherer_Name>
+          <Patienten_Frueherer_Name>Klaus Pimpelhuber</Patienten_Frueherer_Name>
+        </Menge_Frueherer_Name>
+        <Patienten_Geschlecht>M</Patienten_Geschlecht>
+        <Patienten_Geburtsdatum>01.01.1980</Patienten_Geburtsdatum>
+        <Menge_Adresse>
+          <Adresse>
+            <Patienten_Strasse>Testweg</Patienten_Strasse>
+            <Patienten_Hausnummer>1</Patienten_Hausnummer>
+            <Patienten_Land>DE</Patienten_Land>
+            <Patienten_PLZ>01234</Patienten_PLZ>
+            <Patienten_Ort>Musterhausen</Patienten_Ort>
+          </Adresse>
+        </Menge_Adresse>
+      </Patienten_Stammdaten>
+      <Menge_Meldung>
+        <Meldung Meldung_ID="TEST1727528" Melder_ID="TEST">
+          <Meldedatum>11.06.2024</Meldedatum>
+          <Meldebegruendung>I</Meldebegruendung>
+          <Meldeanlass>statusaenderung</Meldeanlass>
+          <Tumorzuordnung Tumor_ID="1">
+            <Primaertumor_ICD_Code>C17.1</Primaertumor_ICD_Code>
+            <Primaertumor_ICD_Version>10 2015 GM</Primaertumor_ICD_Version>
+            <Diagnosedatum>10.06.2024</Diagnosedatum>
+            <Seitenlokalisation>T</Seitenlokalisation>
+          </Tumorzuordnung>
+          <Diagnose>
+            <Diagnosesicherung>1</Diagnosesicherung>
+            <Allgemeiner_Leistungszustand>0</Allgemeiner_Leistungszustand>
+            <Anmerkung>Test</Anmerkung>
+          </Diagnose>
+          <Menge_Verlauf>
+            <!-- Ohne Gesamtbeurteilung, in oBDS v3 wird sie benötigt: "X" (fehlende Angaben) -->
+            <Verlauf Verlauf_ID="V1">
+              <Untersuchungsdatum_Verlauf>14.10.2024</Untersuchungsdatum_Verlauf>
+              <Verlauf_Lokaler_Tumorstatus>K</Verlauf_Lokaler_Tumorstatus>
+            </Verlauf>
+            <!-- "U" (Beurteilung unmöglich) ist eine Angabe und bleibt erhalten -->
+            <Verlauf Verlauf_ID="V2">
+              <Untersuchungsdatum_Verlauf>15.10.2024</Untersuchungsdatum_Verlauf>
+              <Gesamtbeurteilung_Tumorstatus>U</Gesamtbeurteilung_Tumorstatus>
+            </Verlauf>
+          </Menge_Verlauf>
+        </Meldung>
+      </Menge_Meldung>
+    </Patient>
+  </Menge_Patient>
+  <Menge_Melder>
+    <Melder Melder_ID="TEST">
+      <Melder_IKNR>103456789</Melder_IKNR>
+      <Meldende_Stelle>TEST</Meldende_Stelle>
+    </Melder>
+  </Menge_Melder>
+</ADT_GEKID>
