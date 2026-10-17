@@ -2,8 +2,8 @@ package io.github.bzkf.obds2toobds3;
 
 import de.basisdatensatz.obds.v3.HistologieTyp;
 import de.basisdatensatz.obds.v3.MorphologieICDOTyp;
-import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,8 +27,8 @@ public class HistologieMapper {
         Comparator.comparing(
                 (de.basisdatensatz.obds.v2.HistologieTyp h) ->
                     MapperUtils.mapDateString(h.getTumorHistologiedatum())
-                        .map(d -> d.getValue())
-                        .map(c -> LocalDate.of(c.getYear(), c.getMonth(), c.getDay()))
+                        .map(d -> d.getValue().toGregorianCalendar())
+                        .map(GregorianCalendar::toInstant)
                         .orElse(null),
                 Comparator.nullsLast(Comparator.naturalOrder()))
             .reversed();
