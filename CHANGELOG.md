@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.24](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.23...v0.1.24) (2026-10-17)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([#146](https://github.com/bzkf/obds2-to-obds3/issues/146)) ([ee890fa](https://github.com/bzkf/obds2-to-obds3/commit/ee890fa4ef37ad3e1520e1f059ad979bbf28549b))
+* ecog/gesamtbeurteilungsmapping in tod meldung ([#148](https://github.com/bzkf/obds2-to-obds3/issues/148)) ([60dbb34](https://github.com/bzkf/obds2-to-obds3/commit/60dbb342117276ceb8fd48320e7d030e5ed1fd0d))
+* revert timezone-independent date conversion ([#144](https://github.com/bzkf/obds2-to-obds3/issues/144)) ([#150](https://github.com/bzkf/obds2-to-obds3/issues/150)) ([3f1fa09](https://github.com/bzkf/obds2-to-obds3/commit/3f1fa098bc88d889d4f9a6a3c5210a21b5ed3039))
+
 ## [0.1.23](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.22...v0.1.23) (2026-10-12)
 
 
