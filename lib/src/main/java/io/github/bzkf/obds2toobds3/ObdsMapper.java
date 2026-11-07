@@ -30,6 +30,7 @@ import de.basisdatensatz.obds.v3.OBDS;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.TimeZone;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.MapperFeature;
 import tools.jackson.databind.SerializationFeature;
@@ -41,13 +42,25 @@ public class ObdsMapper {
   public static final XmlMapper XML_MAPPER =
       XmlMapper.builder()
           .defaultUseWrapper(false)
-          .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd"))
+          .defaultDateFormat(utcDateFormat())
+          .defaultTimeZone(TimeZone.getTimeZone("UTC"))
           .addModule(new JakartaXmlBindAnnotationModule())
+          .addModule(new PlainDateModule())
           .disable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
           .enable(SerializationFeature.INDENT_OUTPUT)
           .changeDefaultPropertyInclusion(
               incl -> incl.withValueInclusion(JsonInclude.Include.NON_EMPTY))
           .build();
+
+  /**
+   * oBDS dates are plain calendar dates. Parsing and writing them in a fixed time zone keeps the
+   * result independent of the JVM's default time zone.
+   */
+  private static SimpleDateFormat utcDateFormat() {
+    var format = new SimpleDateFormat("yyyy-MM-dd");
+    format.setTimeZone(TimeZone.getTimeZone("UTC"));
+    return format;
+  }
 
   private final PatientMapper patientMapper;
 
