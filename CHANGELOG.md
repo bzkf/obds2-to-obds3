@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.25](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.24...v0.1.25) (2026-11-07)
+
+
+### Bug Fixes
+
+* re-apply timezone-independent date conversion ([#151](https://github.com/bzkf/obds2-to-obds3/issues/151)) ([b5757c7](https://github.com/bzkf/obds2-to-obds3/commit/b5757c741a79fb73dbb7436b0b55c0165c985eef))
+
 ## [0.1.24](https://github.com/bzkf/obds2-to-obds3/compare/v0.1.23...v0.1.24) (2026-10-17)
 
 
